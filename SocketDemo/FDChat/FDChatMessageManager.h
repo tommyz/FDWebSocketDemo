@@ -7,8 +7,8 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "FDChatMessage.h"
 
-@class FDChatMessage;
 @interface FDChatMessageManager : NSObject
 
 
@@ -81,4 +81,12 @@
  */
 + (FDChatMessage *)buildHeartPacketMessage;
 
+
+/**
+ 解析收到的数据
+
+ @param message message
+ @param parseCompletion parseCompletion
+ */
++ (void)parseMessage:(NSString *)message parseCompletion:(void(^)(FDChatMessage *,BOOL))parseCompletion;
 @end

@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
+@class FDChatMessage;
 
 // def block
 typedef void(^ConnectSocketSuccess)();
@@ -15,11 +16,10 @@ typedef void(^ConnectSocketFailure)();
 typedef void(^DisconnectCompletion)();
 typedef void(^WriteMessageSuccess)();
 typedef void(^WriteMessageFailure)();
-typedef void(^ReceiveMessageBlock)(NSString *message);
+typedef void(^ReceiveMessageBlock)(FDChatMessage *message);
 
 @interface FDWebSocket : NSObject
 
-- (void)open;
 /**
  创建单例
 

@@ -8,6 +8,7 @@
 
 #import "FDWebSocket.h"
 #import "SRWebSocket.h"
+#import "FDChatMessageManager.h"
 
 // test
 //#define SocketUrl @"ws://115.29.193.48:8088"
@@ -25,11 +26,9 @@ typedef NS_ENUM(NSUInteger, FDWebSocketErrorCode) {
     Invalid_Server_Cert = 23556
 };
 
-@interface FDWebSocket ()<SRWebSocketDelegate> {
-    SRWebSocket *_webSocket;
-}
+@interface FDWebSocket ()<SRWebSocketDelegate>
 
-@property (copy, nonatomic) SRWebSocket *webSocket;
+@property (strong, nonatomic) SRWebSocket *webSocket;
 
 // 连接成功block
 @property (copy, nonatomic) ConnectSocketSuccess connectSocketSuccess;
@@ -124,13 +123,13 @@ typedef NS_ENUM(NSUInteger, FDWebSocketErrorCode) {
 
 - (void)open {
     // 不用成员变量会闪退...
-    if (!_webSocket) {
-        [_webSocket close];
-        _webSocket.delegate = nil;
+    if (!self.webSocket) {
+        [self.webSocket close];
+        self.webSocket.delegate = nil;
         
-        _webSocket = [[SRWebSocket alloc] initWithURL:[NSURL URLWithString:SocketUrl]];
-        _webSocket.delegate = self;
-        [_webSocket open];
+        self.webSocket = [[SRWebSocket alloc] initWithURL:[NSURL URLWithString:SocketUrl]];
+        self.webSocket.delegate = self;
+        [self.webSocket open];
     }
 }
 
@@ -197,13 +196,23 @@ typedef NS_ENUM(NSUInteger, FDWebSocketErrorCode) {
 }
 
 - (void)webSocket:(SRWebSocket *)webSocket didReceiveMessage:(id)message {
-    if (self.receiveMessageBlock) {
-        self.receiveMessageBlock(message);
-    }
-    if (self.writeMessageSuccess) {
-        self.writeMessageSuccess();
-        [self cleanBlock];
-    }
+    __weak typeof(self) weakSelf = self;
+    [FDChatMessageManager parseMessage:message parseCompletion:^(FDChatMessage *chatMessage, BOOL isReply) {
+        if (chatMessage) {
+            if (isReply) {
+                if (weakSelf.writeMessageSuccess) {
+                    weakSelf.writeMessageSuccess();
+                    [weakSelf cleanBlock];
+                }
+            }else{
+                if (weakSelf.receiveMessageBlock) {
+                    weakSelf.receiveMessageBlock(chatMessage);
+                }
+            }
+        }
+    }];
+    
+    
 }
 
 - (void)webSocket:(SRWebSocket *)webSocket didCloseWithCode:(NSInteger)code reason:(NSString *)reason wasClean:(BOOL)wasClean {

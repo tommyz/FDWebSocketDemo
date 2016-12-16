@@ -8,7 +8,6 @@
 
 #import "ViewController.h"
 #import "FDWebSocket.h"
-#import "FDChatMessage.h"
 #import "FDChatMessageManager.h"
 
 @interface ViewController ()
@@ -29,7 +28,7 @@
     [FDWebSocket setExceptionDisconnectBlock:^{
         NSLog(@"异常断开");
     }];
-    [FDWebSocket setReceiveMessageBlock:^(NSString *message) {
+    [FDWebSocket setReceiveMessageBlock:^(FDChatMessage *message) {
         NSLog(@"收到信息:%@",message);
     }];
 }
