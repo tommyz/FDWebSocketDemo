@@ -3,7 +3,6 @@
 
 target 'SocketDemo' do
 
-pod 'CocoaAsyncSocket'  
 pod 'SocketRocket'
 pod 'JSONModel'
 

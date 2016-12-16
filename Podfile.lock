@@ -1,20 +1,15 @@
 PODS:
-  - CocoaAsyncSocket (7.5.0):
-    - CocoaAsyncSocket/GCD (= 7.5.0)
-  - CocoaAsyncSocket/GCD (7.5.0)
   - JSONModel (1.7.0)
   - SocketRocket (0.5.1)
 
 DEPENDENCIES:
-  - CocoaAsyncSocket
   - JSONModel
   - SocketRocket
 
 SPEC CHECKSUMS:
-  CocoaAsyncSocket: 3baeb1ddd969f81cf9fca81053ae49ef2d1cbbfa
   JSONModel: 840bc0fcffb24b8454d2c026bf26fea454b8e98d
   SocketRocket: d57c7159b83c3c6655745cd15302aa24b6bae531
 
-PODFILE CHECKSUM: 50a34854980362d24028d1491028b21090696a0f
+PODFILE CHECKSUM: 675fa668920b53fffa494331b541954f95769ba8
 
 COCOAPODS: 1.0.1

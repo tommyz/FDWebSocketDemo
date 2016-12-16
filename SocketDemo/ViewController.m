@@ -76,7 +76,7 @@
 }
 
 - (IBAction)sendAction:(id)sender {
-    [FDWebSocket sendMessage:[[FDChatMessageMamager buildTextMessage:@"dsadasd"] toJSONString] Success:^{
+    [FDWebSocket sendMessage:[[FDChatMessageMamager buildTextMessage:@"iOS测试"] toJSONString] Success:^{
         NSLog(@"发送成功");
     } failure:^{
         NSLog(@"发送失败");
