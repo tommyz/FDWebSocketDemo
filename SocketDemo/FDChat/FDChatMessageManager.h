@@ -1,5 +1,5 @@
 //
-//  FDChatMessageMamager.h
+//  FDChatMessageManager.h
 //  SocketDemo
 //
 //  Created by xietao on 16/12/12.
@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 
 @class FDChatMessage;
-@interface FDChatMessageMamager : NSObject
+@interface FDChatMessageManager : NSObject
 
 
 

@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		938B1C5F1E03987B0079F8CC /* FDChatMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 938B1C5A1E03987B0079F8CC /* FDChatMessage.m */; };
-		938B1C601E03987B0079F8CC /* FDChatMessageMamager.m in Sources */ = {isa = PBXBuildFile; fileRef = 938B1C5C1E03987B0079F8CC /* FDChatMessageMamager.m */; };
+		938B1C601E03987B0079F8CC /* FDChatMessageManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 938B1C5C1E03987B0079F8CC /* FDChatMessageManager.m */; };
 		938B1C611E03987B0079F8CC /* FDWebSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 938B1C5E1E03987B0079F8CC /* FDWebSocket.m */; };
 		93E42A481DCC778E0005ED14 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 93E42A471DCC778E0005ED14 /* main.m */; };
 		93E42A4B1DCC778E0005ED14 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 93E42A4A1DCC778E0005ED14 /* AppDelegate.m */; };
@@ -25,8 +25,8 @@
 		42A8E5BE3762167DCFAE13F5 /* libPods-SocketDemo.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-SocketDemo.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		938B1C591E03987B0079F8CC /* FDChatMessage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FDChatMessage.h; sourceTree = "<group>"; };
 		938B1C5A1E03987B0079F8CC /* FDChatMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FDChatMessage.m; sourceTree = "<group>"; };
-		938B1C5B1E03987B0079F8CC /* FDChatMessageMamager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FDChatMessageMamager.h; sourceTree = "<group>"; };
-		938B1C5C1E03987B0079F8CC /* FDChatMessageMamager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FDChatMessageMamager.m; sourceTree = "<group>"; };
+		938B1C5B1E03987B0079F8CC /* FDChatMessageManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FDChatMessageManager.h; sourceTree = "<group>"; };
+		938B1C5C1E03987B0079F8CC /* FDChatMessageManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FDChatMessageManager.m; sourceTree = "<group>"; };
 		938B1C5D1E03987B0079F8CC /* FDWebSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FDWebSocket.h; sourceTree = "<group>"; };
 		938B1C5E1E03987B0079F8CC /* FDWebSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FDWebSocket.m; sourceTree = "<group>"; };
 		93E42A431DCC778E0005ED14 /* SocketDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SocketDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -77,8 +77,8 @@
 				938B1C5E1E03987B0079F8CC /* FDWebSocket.m */,
 				938B1C591E03987B0079F8CC /* FDChatMessage.h */,
 				938B1C5A1E03987B0079F8CC /* FDChatMessage.m */,
-				938B1C5B1E03987B0079F8CC /* FDChatMessageMamager.h */,
-				938B1C5C1E03987B0079F8CC /* FDChatMessageMamager.m */,
+				938B1C5B1E03987B0079F8CC /* FDChatMessageManager.h */,
+				938B1C5C1E03987B0079F8CC /* FDChatMessageManager.m */,
 			);
 			path = FDChat;
 			sourceTree = "<group>";
@@ -250,7 +250,7 @@
 			files = (
 				93E42A4E1DCC778E0005ED14 /* ViewController.m in Sources */,
 				938B1C611E03987B0079F8CC /* FDWebSocket.m in Sources */,
-				938B1C601E03987B0079F8CC /* FDChatMessageMamager.m in Sources */,
+				938B1C601E03987B0079F8CC /* FDChatMessageManager.m in Sources */,
 				938B1C5F1E03987B0079F8CC /* FDChatMessage.m in Sources */,
 				93E42A4B1DCC778E0005ED14 /* AppDelegate.m in Sources */,
 				93E42A481DCC778E0005ED14 /* main.m in Sources */,

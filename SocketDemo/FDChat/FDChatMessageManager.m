@@ -1,12 +1,12 @@
 //
-//  FDChatMessageMamager.m
+//  FDChatMessageManager.m
 //  SocketDemo
 //
 //  Created by xietao on 16/12/12.
 //  Copyright © 2016年 xietao3. All rights reserved.
 //
 
-#import "FDChatMessageMamager.h"
+#import "FDChatMessageManager.h"
 #import "FDChatMessage.h"
 
 
@@ -36,11 +36,11 @@ typedef NS_ENUM(NSUInteger, FDMessageSendMsgType) {
 };
 
 
-@interface FDChatMessageMamager ()
+@interface FDChatMessageManager ()
 
 @end
 
-@implementation FDChatMessageMamager
+@implementation FDChatMessageManager
 
 + (FDChatMessage *)buildConnectSocketMessage {
     return [self buildChatCommondType:FDMessageSendChatTypeLINK];

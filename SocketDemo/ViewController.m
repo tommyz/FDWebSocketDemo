@@ -9,7 +9,7 @@
 #import "ViewController.h"
 #import "FDWebSocket.h"
 #import "FDChatMessage.h"
-#import "FDChatMessageMamager.h"
+#import "FDChatMessageManager.h"
 
 @interface ViewController ()
 
@@ -59,7 +59,7 @@
 }
 
 - (IBAction)isConnectedAction:(id)sender {
-    [FDWebSocket sendMessage:[[FDChatMessageMamager buildConnectSocketMessage] toJSONString] Success:^{
+    [FDWebSocket sendMessage:[[FDChatMessageManager buildConnectSocketMessage] toJSONString] Success:^{
         NSLog(@"link成功");
     } failure:^{
         
@@ -68,7 +68,7 @@
 
 }
 - (IBAction)setupAction:(id)sender {
-    [FDWebSocket sendMessage:[[FDChatMessageMamager buildSetupChatMessage] toJSONString] Success:^{
+    [FDWebSocket sendMessage:[[FDChatMessageManager buildSetupChatMessage] toJSONString] Success:^{
         NSLog(@"初始化成功");
     } failure:^{
         
@@ -76,7 +76,7 @@
 }
 
 - (IBAction)sendAction:(id)sender {
-    [FDWebSocket sendMessage:[[FDChatMessageMamager buildTextMessage:@"iOS测试"] toJSONString] Success:^{
+    [FDWebSocket sendMessage:[[FDChatMessageManager buildTextMessage:@"iOS测试"] toJSONString] Success:^{
         NSLog(@"发送成功");
     } failure:^{
         NSLog(@"发送失败");
