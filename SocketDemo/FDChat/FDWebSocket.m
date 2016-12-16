@@ -127,7 +127,11 @@ typedef NS_ENUM(NSUInteger, FDWebSocketErrorCode) {
         [self.webSocket close];
         self.webSocket.delegate = nil;
         
-        self.webSocket = [[SRWebSocket alloc] initWithURL:[NSURL URLWithString:SocketUrl]];
+#warning 登陆信息
+        NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:SocketUrl]];
+        [request setValue:@"xietao3" forHTTPHeaderField:@"uid"];
+        [request setValue:@"xietao3" forHTTPHeaderField:@"connectId"];
+        self.webSocket = [[SRWebSocket alloc] initWithURLRequest:request];
         self.webSocket.delegate = self;
         [self.webSocket open];
     }

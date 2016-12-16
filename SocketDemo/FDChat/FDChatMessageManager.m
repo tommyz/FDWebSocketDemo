@@ -178,6 +178,7 @@ typedef NS_ENUM(NSUInteger, FDMessageSendMsgType) {
 
 + (void)parseMessage:(NSString *)message parseCompletion:(void(^)(FDChatMessage *,BOOL))parseCompletion {
     if (!message && parseCompletion) parseCompletion(nil,YES);
+#warning reply 
     FDChatMessage *chatMessage = [[FDChatMessage alloc] initWithString:message error:NULL];
     BOOL isReply = NO;
     if ([chatMessage.chatType isEqualToString:FDChatType_LINK] ||
