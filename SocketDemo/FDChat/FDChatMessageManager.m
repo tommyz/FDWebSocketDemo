@@ -7,6 +7,7 @@
 //
 
 #import "FDChatMessageManager.h"
+#import "FDWebSocket.h"
 
 
 typedef NS_ENUM(NSUInteger, FDMessageSendChatType) {
@@ -34,13 +35,56 @@ typedef NS_ENUM(NSUInteger, FDMessageSendMsgType) {
     FDMessageSendMsgTypeComment
 };
 
+static const NSTimeInterval FDMessageTimeOutInterval = 15.0;
 
 @interface FDChatMessageManager ()
+
+// 发送信息成功block
+@property (copy, nonatomic) WriteMessageSuccess writeMessageSuccess;
+// 发送信息失败block
+@property (copy, nonatomic) WriteMessageFailure writeMessageFailure;
+
+@property (copy, nonatomic) NSString *uuid;
+
 
 @end
 
 @implementation FDChatMessageManager
 
+- (instancetype)initWithUUID:(NSString *)UUID writeMessageSuccess:(WriteMessageSuccess)success writeMessageFailure:(WriteMessageFailure)failure {
+    self = [super init];
+    if (self) {
+        self.uuid = UUID;
+        self.writeMessageSuccess = success;
+        self.writeMessageFailure = failure;
+        [self performSelector:@selector(timeoutAction) withObject:nil afterDelay:FDMessageTimeOutInterval];
+    }
+    return self;
+}
+
+- (void)timeoutAction {
+    if (self.writeMessageFailure) {
+        self.writeMessageFailure();
+    }
+    [FDWebSocket removeMessageManagerWithUuid:_uuid];
+}
+
+- (void)setMessageSuccess {
+    [NSObject cancelPreviousPerformRequestsWithTarget:self];
+    if (self.writeMessageSuccess) {
+        self.writeMessageSuccess();
+    }
+}
+
+- (void)setMessageFailure {
+    [NSObject cancelPreviousPerformRequestsWithTarget:self];
+    if (self.writeMessageFailure) {
+        self.writeMessageFailure();
+    }
+}
+
+
+#pragma mark - Builder
 + (FDChatMessage *)buildConnectSocketMessage {
     return [self buildChatCommondType:FDMessageSendChatTypeLINK];
 }
@@ -77,7 +121,7 @@ typedef NS_ENUM(NSUInteger, FDMessageSendMsgType) {
     return [self buildChatCommondType:FDMessageSendChatTypeHEART];
 }
 
-#pragma mark - Common
+#pragma mark Common
 + (FDChatMessage *)buildChatCommondType:(FDMessageSendChatType)commondType {
     return [self buildMessage:nil msgType:FDMessageSendMsgTypeNone chatType:commondType];
 }
@@ -176,11 +220,10 @@ typedef NS_ENUM(NSUInteger, FDMessageSendMsgType) {
 }
 
 
-+ (void)parseMessage:(NSString *)message parseCompletion:(void(^)(FDChatMessage *,BOOL))parseCompletion {
-    if (!message && parseCompletion) parseCompletion(nil,YES);
++ (void)parseMessage:(NSString *)message parseCompletion:(void(^)(FDChatMessage *))parseCompletion {
+    if (!message && parseCompletion) parseCompletion(nil);
 #warning reply 
     FDChatMessage *chatMessage = [[FDChatMessage alloc] initWithString:message error:NULL];
-    BOOL isReply = NO;
     if ([chatMessage.chatType isEqualToString:FDChatType_LINK] ||
         [chatMessage.chatType isEqualToString:FDChatType_FIRST_CHAT] ||
         [chatMessage.chatType isEqualToString:FDChatType_CHATING] ||
@@ -188,15 +231,15 @@ typedef NS_ENUM(NSUInteger, FDMessageSendMsgType) {
         [chatMessage.chatType isEqualToString:FDChatType_ULN] ||
         [chatMessage.chatType isEqualToString:FDChatType_HEART]
         ) {
-        isReply = YES;
+        chatMessage.isReply = YES;
     }
     if (parseCompletion) {
-        parseCompletion(chatMessage,isReply);
+        parseCompletion(chatMessage);
     }
 }
 
 
-#pragma mark - UUID
+#pragma mark UUID
 + (NSString *)uuidString
 {
     CFUUIDRef uuid_ref = CFUUIDCreate(NULL);

@@ -20,6 +20,7 @@ typedef void(^ReceiveMessageBlock)(FDChatMessage *message);
 
 @interface FDWebSocket : NSObject
 
+
 /**
  创建单例
 
@@ -70,4 +71,11 @@ typedef void(^ReceiveMessageBlock)(FDChatMessage *message);
  */
 + (void)setReceiveMessageBlock:(ReceiveMessageBlock)receiveMessageBlock;
 
+
+/**
+ 根据UUID移除messageManager从消息列表
+
+ @param uuid uuid description
+ */
++ (void)removeMessageManagerWithUuid:(NSString *)uuid;
 @end

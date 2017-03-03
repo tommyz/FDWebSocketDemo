@@ -11,6 +11,7 @@
 #import "FDChatMessageManager.h"
 
 @interface ViewController ()
+@property (weak, nonatomic) IBOutlet UITextField *inputView;
 
 @end
 
@@ -28,6 +29,7 @@
     [FDWebSocket setExceptionDisconnectBlock:^{
         NSLog(@"异常断开");
     }];
+    
     [FDWebSocket setReceiveMessageBlock:^(FDChatMessage *message) {
         NSLog(@"收到信息:%@",message);
     }];
@@ -58,16 +60,15 @@
 }
 
 - (IBAction)isConnectedAction:(id)sender {
-    [FDWebSocket sendMessage:[[FDChatMessageManager buildConnectSocketMessage] toJSONString] Success:^{
+    [FDWebSocket sendMessage:[FDChatMessageManager buildConnectSocketMessage] Success:^{
         NSLog(@"link成功");
     } failure:^{
         
     }];
     
-
 }
 - (IBAction)setupAction:(id)sender {
-    [FDWebSocket sendMessage:[[FDChatMessageManager buildSetupChatMessage] toJSONString] Success:^{
+    [FDWebSocket sendMessage:[FDChatMessageManager buildSetupChatMessage] Success:^{
         NSLog(@"初始化成功");
     } failure:^{
         
@@ -75,7 +76,9 @@
 }
 
 - (IBAction)sendAction:(id)sender {
-    [FDWebSocket sendMessage:[[FDChatMessageManager buildTextMessage:@"iOS测试"] toJSONString] Success:^{
+    static int count = 0;
+    count++;
+    [FDWebSocket sendMessage:[FDChatMessageManager buildTextMessage:_inputView.text] Success:^{
         NSLog(@"发送成功");
     } failure:^{
         NSLog(@"发送失败");

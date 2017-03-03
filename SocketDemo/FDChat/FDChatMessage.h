@@ -83,6 +83,9 @@ static NSString *const FDChatMsgTypeOrder       = @"order"; // 订单
 @property (strong, nonatomic) NSString *score;
 @property (strong, nonatomic) NSString *isScored;
 
+
+// 其他
+@property (assign, nonatomic) BOOL isReply;
 @end
 
 @interface FDChatMessageVisitor : JSONModel

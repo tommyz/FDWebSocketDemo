@@ -9,12 +9,13 @@
 #import "FDWebSocket.h"
 #import "SRWebSocket.h"
 #import "FDChatMessageManager.h"
+#import "FDChatMessage.h"
 
 // test
-//#define SocketUrl @"ws://115.29.193.48:8088"
+//#define SocketUrl @"ws://121.40.165.18:8088"
 // dev
-#define SocketUrl @"ws://172.28.25.128:8080/chat"
-
+#define SocketUrl @"ws://kf-app.test.fruitday.com/chat"
+#define Uid @"guest_b9953a6b-f66a-4680-aa8e-0e68d177d4db"
 #define kWebSocket     [FDWebSocket shareInstance]
 
 // enum
@@ -30,6 +31,8 @@ typedef NS_ENUM(NSUInteger, FDWebSocketErrorCode) {
 
 @property (strong, nonatomic) SRWebSocket *webSocket;
 
+@property (nonatomic, strong) NSMutableDictionary *callBacks;
+
 // 连接成功block
 @property (copy, nonatomic) ConnectSocketSuccess connectSocketSuccess;
 // 连接失败block
@@ -38,10 +41,7 @@ typedef NS_ENUM(NSUInteger, FDWebSocketErrorCode) {
 @property (copy, nonatomic) DisconnectCompletion disconnectCompletionBlock;
 // 异常断开block
 @property (copy, nonatomic) DisconnectCompletion exceptionDisconnectBlock;
-// 发送信息成功block
-@property (copy, nonatomic) WriteMessageSuccess writeMessageSuccess;
-// 发送信息失败block
-@property (copy, nonatomic) WriteMessageFailure writeMessageFailure;
+// 接收消息block
 @property (copy, nonatomic) ReceiveMessageBlock receiveMessageBlock;
 
 @end
@@ -96,11 +96,11 @@ typedef NS_ENUM(NSUInteger, FDWebSocketErrorCode) {
 
 + (void)sendMessage:(id)message Success:(WriteMessageSuccess)success failure:(WriteMessageFailure)failure {
     NSAssert(message, @"入参不能为空");
-    NSLog(@"入参：%@",message);
+    NSLog(@"入参：%@",[message toJSONString]);
     if (message && kWebSocket.webSocket.readyState == SR_OPEN) {
-        [kWebSocket sendData:message];
-        kWebSocket.writeMessageSuccess = success;
-        kWebSocket.writeMessageFailure = failure;
+        [kWebSocket sendData:[message toJSONString]];
+        FDChatMessageManager *manager = [[FDChatMessageManager alloc] initWithUUID:((FDChatMessage *)message).uuid writeMessageSuccess:success writeMessageFailure:failure];
+        kWebSocket.callBacks[((FDChatMessage *)message).uuid] = manager;
     }else{
         // 未连接状态直接返回发送失败
         if (failure) {
@@ -113,10 +113,15 @@ typedef NS_ENUM(NSUInteger, FDWebSocketErrorCode) {
     kWebSocket.receiveMessageBlock = receiveMessageBlock;
 }
 
++ (void)removeMessageManagerWithUuid:(NSString *)uuid {
+    [kWebSocket.callBacks removeObjectForKey:uuid];
+}
+
 #pragma mark - PrivateMethod
 - (id)init {
     self = [super init];
     if (self) {
+        self.callBacks = [[NSMutableDictionary alloc] init];
     }
     return self;
 }
@@ -129,8 +134,8 @@ typedef NS_ENUM(NSUInteger, FDWebSocketErrorCode) {
         
 #warning 登陆信息
         NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:SocketUrl]];
-        [request setValue:@"xietao3" forHTTPHeaderField:@"uid"];
-        [request setValue:@"xietao3" forHTTPHeaderField:@"connectId"];
+//        [request setValue:Uid forHTTPHeaderField:@"uid"];
+//        [request setValue:@"xietao3" forHTTPHeaderField:@"connectId"];
         self.webSocket = [[SRWebSocket alloc] initWithURLRequest:request];
         self.webSocket.delegate = self;
         [self.webSocket open];
@@ -155,8 +160,6 @@ typedef NS_ENUM(NSUInteger, FDWebSocketErrorCode) {
     self.connectSocketSuccess = nil;
     self.connectSocketFailure = nil;
     self.disconnectCompletionBlock = nil;
-    self.writeMessageSuccess = nil;
-    self.writeMessageFailure = nil;
 }
 
 
@@ -175,9 +178,11 @@ typedef NS_ENUM(NSUInteger, FDWebSocketErrorCode) {
     switch (error.code) {
         case Error_Writing_To_Stream:
         {
-            if (self.writeMessageFailure) {
-                self.writeMessageFailure();
-                [self cleanBlock];
+            // 如果只有一个待处理CallBack 则调用该回调
+            if (self.callBacks.allValues.count == 1) {
+                FDChatMessageManager *manager = self.callBacks.allValues[0];
+                [manager setMessageFailure];
+                [self.callBacks removeAllObjects];
             }
         }
             break;
@@ -201,19 +206,24 @@ typedef NS_ENUM(NSUInteger, FDWebSocketErrorCode) {
 
 - (void)webSocket:(SRWebSocket *)webSocket didReceiveMessage:(id)message {
     __weak typeof(self) weakSelf = self;
-    [FDChatMessageManager parseMessage:message parseCompletion:^(FDChatMessage *chatMessage, BOOL isReply) {
-        if (chatMessage) {
-            if (isReply) {
-                if (weakSelf.writeMessageSuccess) {
-                    weakSelf.writeMessageSuccess();
-                    [weakSelf cleanBlock];
-                }
+    [FDChatMessageManager parseMessage:message parseCompletion:^(FDChatMessage *chatMessage) {
+        if (!chatMessage) return;
+        // 是否为服务器应答 不是服务器应答则收到新消息
+        if (chatMessage.isReply) {
+            if ([weakSelf.callBacks.allKeys containsObject:chatMessage.uuid]) {
+                FDChatMessageManager *manager = weakSelf.callBacks[chatMessage.uuid];
+                [manager setMessageSuccess];
+                [weakSelf.callBacks removeObjectForKey:chatMessage.uuid];
             }else{
-                if (weakSelf.receiveMessageBlock) {
-                    weakSelf.receiveMessageBlock(chatMessage);
-                }
+                NSLog(@"发送超时的消息又收到了");
+            }
+           
+        }else{
+            if (weakSelf.receiveMessageBlock) {
+                weakSelf.receiveMessageBlock(chatMessage);
             }
         }
+        
     }];
     
     

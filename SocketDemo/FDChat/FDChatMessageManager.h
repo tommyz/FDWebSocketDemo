@@ -9,10 +9,21 @@
 #import <Foundation/Foundation.h>
 #import "FDChatMessage.h"
 
+typedef void(^WriteMessageSuccess)();
+typedef void(^WriteMessageFailure)();
+
+
 @interface FDChatMessageManager : NSObject
 
 
+- (instancetype)initWithUUID:(NSString *)UUID writeMessageSuccess:(WriteMessageSuccess)success writeMessageFailure:(WriteMessageFailure)failure;
 
+- (void)setMessageSuccess;
+
+- (void)setMessageFailure;
+
+
+#pragma mark - Builder
 /**
  连接指令
 
@@ -88,5 +99,5 @@
  @param message message
  @param parseCompletion parseCompletion
  */
-+ (void)parseMessage:(NSString *)message parseCompletion:(void(^)(FDChatMessage *,BOOL))parseCompletion;
++ (void)parseMessage:(NSString *)message parseCompletion:(void(^)(FDChatMessage *))parseCompletion;
 @end
