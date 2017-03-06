@@ -15,7 +15,6 @@
 //#define SocketUrl @"ws://121.40.165.18:8088"
 // dev
 #define SocketUrl @"ws://kf-app.test.fruitday.com/chat"
-#define Uid @"guest_b9953a6b-f66a-4680-aa8e-0e68d177d4db"
 #define kWebSocket     [FDWebSocket shareInstance]
 
 // enum
@@ -63,13 +62,13 @@ typedef NS_ENUM(NSUInteger, FDWebSocketErrorCode) {
         if (success) {
             success();
         }
-    }else if (!kWebSocket.webSocket || kWebSocket.webSocket.readyState == SR_CLOSED) {
+    }else if (!kWebSocket.webSocket || kWebSocket.webSocket.readyState >= SR_CLOSING) {
         // 已断开 重新连接
-        kWebSocket.webSocket = nil;
         kWebSocket.connectSocketSuccess = success;
         kWebSocket.connectSocketFailure = failure;
         [kWebSocket open];
-    }else if (kWebSocket.webSocket.readyState == SR_CLOSING) {
+        
+    }else {
         // 正在断开 返回连接失败
         if (failure) {
             failure();
@@ -80,9 +79,11 @@ typedef NS_ENUM(NSUInteger, FDWebSocketErrorCode) {
 + (void)closeSocketCompletionBlock:(void(^)())completionBlock {
     if (kWebSocket.webSocket.readyState == SR_OPEN ||
         kWebSocket.webSocket.readyState == SR_CONNECTING) {
+        
         [kWebSocket close];
         kWebSocket.disconnectCompletionBlock = completionBlock;
-    }else if (kWebSocket.webSocket.readyState == SR_CLOSED){
+        
+    }else if (kWebSocket.webSocket.readyState >= SR_CLOSING){
         // 已断开 则直接返回
         if (completionBlock) {
             completionBlock();
@@ -97,14 +98,15 @@ typedef NS_ENUM(NSUInteger, FDWebSocketErrorCode) {
 + (void)sendMessage:(id)message Success:(WriteMessageSuccess)success failure:(WriteMessageFailure)failure {
     NSAssert(message, @"入参不能为空");
     if (!message) return;
-    NSLog(@"入参：%@",[message toJSONString]);
+//    NSLog(@"入参：%@",[message toJSONString]);
     
-    if (message && kWebSocket.webSocket.readyState == SR_OPEN) {
+    if (kWebSocket.webSocket.readyState == SR_OPEN) {
         // 已连接
         FDChatMessageManager *manager = [[FDChatMessageManager alloc] initWithUUID:((FDChatMessage *)message).uuid writeMessageSuccess:success writeMessageFailure:failure];
         kWebSocket.callBacks[((FDChatMessage *)message).uuid] = manager;
         [kWebSocket sendData:[message toJSONString]];
-    }else if (message && kWebSocket.webSocket.readyState == SR_CLOSED) {
+        
+    }else if (kWebSocket.webSocket.readyState >= SR_CLOSING) {
         // 未连接：重连后再发生
         [FDWebSocket openSocketSuccess:^{
             FDChatMessageManager *manager = [[FDChatMessageManager alloc] initWithUUID:((FDChatMessage *)message).uuid writeMessageSuccess:success writeMessageFailure:failure];
@@ -115,11 +117,13 @@ typedef NS_ENUM(NSUInteger, FDWebSocketErrorCode) {
                 failure();
             }
         }];
+        
     }else{
         // 未连接状态直接返回发送失败
         if (failure) {
             failure();
         }
+        
     }
 }
 
@@ -141,15 +145,16 @@ typedef NS_ENUM(NSUInteger, FDWebSocketErrorCode) {
 }
 
 - (void)open {
+    self.webSocket = nil;
+
     // 不用成员变量会闪退...
     if (!self.webSocket) {
         [self.webSocket close];
         self.webSocket.delegate = nil;
         
-#warning 登陆信息
+#warning 登陆信息 connect_id
         NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:SocketUrl]];
-//        [request setValue:Uid forHTTPHeaderField:@"uid"];
-//        [request setValue:@"xietao3" forHTTPHeaderField:@"connectId"];
+        [request setValue:@"292d4f83f7f5ab3edbf484eeb8ce5149" forHTTPHeaderField:@"connectId"];
         self.webSocket = [[SRWebSocket alloc] initWithURLRequest:request];
         self.webSocket.delegate = self;
         [self.webSocket open];
@@ -226,7 +231,6 @@ typedef NS_ENUM(NSUInteger, FDWebSocketErrorCode) {
             break;
     }
     
-    self.webSocket = nil;
 }
 
 - (void)webSocket:(SRWebSocket *)webSocket didReceiveMessage:(id)message {
@@ -256,7 +260,7 @@ typedef NS_ENUM(NSUInteger, FDWebSocketErrorCode) {
 
 - (void)webSocket:(SRWebSocket *)webSocket didCloseWithCode:(NSInteger)code reason:(NSString *)reason wasClean:(BOOL)wasClean {
     NSLog(@"WebSocket closed");
-   
+
     // 主动断开
     if (self.disconnectCompletionBlock) {
         self.disconnectCompletionBlock();
@@ -271,7 +275,6 @@ typedef NS_ENUM(NSUInteger, FDWebSocketErrorCode) {
         self.exceptionDisconnectBlock();
     }
     
-    self.webSocket = nil;
 }
 
 - (void)webSocket:(SRWebSocket *)webSocket didReceivePong:(NSData *)pongPayload {
