@@ -8,7 +8,6 @@
 
 #import "ViewController.h"
 #import "FDWebSocket.h"
-#import "FDChatMessageManager.h"
 
 @interface ViewController ()
 @property (weak, nonatomic) IBOutlet UITextField *inputView;
@@ -60,7 +59,7 @@
 }
 
 - (IBAction)isConnectedAction:(id)sender {
-    [FDWebSocket sendMessage:[FDChatMessageManager buildConnectSocketMessage] Success:^{
+    [FDWebSocket sendMessage:[FDChatMessageBuilder buildConnectSocketMessage] Success:^{
         NSLog(@"link成功");
     } failure:^{
         
@@ -68,7 +67,7 @@
     
 }
 - (IBAction)setupAction:(id)sender {
-    [FDWebSocket sendMessage:[FDChatMessageManager buildSetupChatMessage] Success:^{
+    [FDWebSocket sendMessage:[FDChatMessageBuilder buildSetupChatMessage] Success:^{
         NSLog(@"初始化成功");
     } failure:^{
         
@@ -78,7 +77,7 @@
 - (IBAction)sendAction:(id)sender {
     static int count = 0;
     count++;
-    [FDWebSocket sendMessage:[FDChatMessageManager buildTextMessage:_inputView.text] Success:^{
+    [FDWebSocket sendMessage:[FDChatMessageBuilder buildTextMessage:_inputView.text] Success:^{
         NSLog(@"发送成功");
     } failure:^{
         NSLog(@"发送失败");

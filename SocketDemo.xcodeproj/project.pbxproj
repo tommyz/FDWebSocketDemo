@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		933179101E6D43470093E49C /* FDChatMessageBuilder.m in Sources */ = {isa = PBXBuildFile; fileRef = 9331790F1E6D43470093E49C /* FDChatMessageBuilder.m */; };
+		933179131E6D4BA80093E49C /* FDChatMessageParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 933179121E6D4BA80093E49C /* FDChatMessageParser.m */; };
 		938B1C5F1E03987B0079F8CC /* FDChatMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 938B1C5A1E03987B0079F8CC /* FDChatMessage.m */; };
 		938B1C601E03987B0079F8CC /* FDChatMessageManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 938B1C5C1E03987B0079F8CC /* FDChatMessageManager.m */; };
 		938B1C611E03987B0079F8CC /* FDWebSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 938B1C5E1E03987B0079F8CC /* FDWebSocket.m */; };
@@ -23,6 +25,10 @@
 		24B266FF51E08609FEA3BBBA /* Pods-SocketDemo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SocketDemo.release.xcconfig"; path = "Pods/Target Support Files/Pods-SocketDemo/Pods-SocketDemo.release.xcconfig"; sourceTree = "<group>"; };
 		38A485F30D61691842406084 /* Pods-SocketDemo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SocketDemo.debug.xcconfig"; path = "Pods/Target Support Files/Pods-SocketDemo/Pods-SocketDemo.debug.xcconfig"; sourceTree = "<group>"; };
 		42A8E5BE3762167DCFAE13F5 /* libPods-SocketDemo.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-SocketDemo.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		9331790E1E6D43470093E49C /* FDChatMessageBuilder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FDChatMessageBuilder.h; sourceTree = "<group>"; };
+		9331790F1E6D43470093E49C /* FDChatMessageBuilder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FDChatMessageBuilder.m; sourceTree = "<group>"; };
+		933179111E6D4BA80093E49C /* FDChatMessageParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FDChatMessageParser.h; sourceTree = "<group>"; };
+		933179121E6D4BA80093E49C /* FDChatMessageParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FDChatMessageParser.m; sourceTree = "<group>"; };
 		938B1C591E03987B0079F8CC /* FDChatMessage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FDChatMessage.h; sourceTree = "<group>"; };
 		938B1C5A1E03987B0079F8CC /* FDChatMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FDChatMessage.m; sourceTree = "<group>"; };
 		938B1C5B1E03987B0079F8CC /* FDChatMessageManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FDChatMessageManager.h; sourceTree = "<group>"; };
@@ -79,6 +85,10 @@
 				938B1C5A1E03987B0079F8CC /* FDChatMessage.m */,
 				938B1C5B1E03987B0079F8CC /* FDChatMessageManager.h */,
 				938B1C5C1E03987B0079F8CC /* FDChatMessageManager.m */,
+				9331790E1E6D43470093E49C /* FDChatMessageBuilder.h */,
+				9331790F1E6D43470093E49C /* FDChatMessageBuilder.m */,
+				933179111E6D4BA80093E49C /* FDChatMessageParser.h */,
+				933179121E6D4BA80093E49C /* FDChatMessageParser.m */,
 			);
 			path = FDChat;
 			sourceTree = "<group>";
@@ -248,9 +258,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				933179101E6D43470093E49C /* FDChatMessageBuilder.m in Sources */,
 				93E42A4E1DCC778E0005ED14 /* ViewController.m in Sources */,
 				938B1C611E03987B0079F8CC /* FDWebSocket.m in Sources */,
 				938B1C601E03987B0079F8CC /* FDChatMessageManager.m in Sources */,
+				933179131E6D4BA80093E49C /* FDChatMessageParser.m in Sources */,
 				938B1C5F1E03987B0079F8CC /* FDChatMessage.m in Sources */,
 				93E42A4B1DCC778E0005ED14 /* AppDelegate.m in Sources */,
 				93E42A481DCC778E0005ED14 /* main.m in Sources */,

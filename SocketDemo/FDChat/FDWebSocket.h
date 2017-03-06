@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "FDChatMessageBuilder.h"
 
 @class FDChatMessage;
 

@@ -10,6 +10,7 @@
 #import "SRWebSocket.h"
 #import "FDChatMessageManager.h"
 #import "FDChatMessage.h"
+#import "FDChatMessageParser.h"
 
 // test
 //#define SocketUrl @"ws://121.40.165.18:8088"
@@ -235,7 +236,7 @@ typedef NS_ENUM(NSUInteger, FDWebSocketErrorCode) {
 
 - (void)webSocket:(SRWebSocket *)webSocket didReceiveMessage:(id)message {
     __weak typeof(self) weakSelf = self;
-    [FDChatMessageManager parseMessage:message parseCompletion:^(FDChatMessage *chatMessage) {
+    [FDChatMessageParser parseMessage:message parseCompletion:^(FDChatMessage *chatMessage) {
         if (!chatMessage) return;
         // 是否为服务器应答 不是服务器应答则收到新消息
         if (chatMessage.isReply) {
