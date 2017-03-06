@@ -203,9 +203,9 @@ typedef NS_ENUM(NSUInteger, FDWebSocketErrorCode) {
         // 如果只有一个待处理CallBack 则调用该回调
         FDChatMessageManager *manager = self.callBacks.allValues[0];
         [manager setMessageFailure];
-        [self.callBacks removeAllObjects];
     }
     
+    /* 方案二
     switch (error.code) {
         case Error_Writing_To_Stream:
         {
@@ -231,32 +231,13 @@ typedef NS_ENUM(NSUInteger, FDWebSocketErrorCode) {
         }
             break;
     }
+     */
     
 }
 
 - (void)webSocket:(SRWebSocket *)webSocket didReceiveMessage:(id)message {
-    __weak typeof(self) weakSelf = self;
-    [FDChatMessageParser parseMessage:message parseCompletion:^(FDChatMessage *chatMessage) {
-        if (!chatMessage) return;
-        // 是否为服务器应答 不是服务器应答则收到新消息
-        if (chatMessage.isReply) {
-            if ([weakSelf.callBacks.allKeys containsObject:chatMessage.uuid]) {
-                FDChatMessageManager *manager = weakSelf.callBacks[chatMessage.uuid];
-                [manager setMessageSuccess];
-                [weakSelf.callBacks removeObjectForKey:chatMessage.uuid];
-            }else{
-                NSLog(@"发送超时的消息又收到了");
-            }
-           
-        }else{
-            if (weakSelf.receiveMessageBlock) {
-                weakSelf.receiveMessageBlock(chatMessage);
-            }
-        }
-        
-    }];
-    
-    
+    // 解析接收到的数据
+    [FDChatMessageParser parseMessage:message callBacks:self.callBacks receiveMessageBlock:self.receiveMessageBlock];
 }
 
 - (void)webSocket:(SRWebSocket *)webSocket didCloseWithCode:(NSInteger)code reason:(NSString *)reason wasClean:(BOOL)wasClean {

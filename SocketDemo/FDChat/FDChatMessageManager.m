@@ -48,6 +48,8 @@ static const NSTimeInterval FDMessageTimeOutInterval = 15.0;
     if (self.writeMessageSuccess) {
         self.writeMessageSuccess();
     }
+    [FDWebSocket removeMessageManagerWithUuid:_uuid];
+
 }
 
 - (void)setMessageFailure {
@@ -55,6 +57,8 @@ static const NSTimeInterval FDMessageTimeOutInterval = 15.0;
     if (self.writeMessageFailure) {
         self.writeMessageFailure();
     }
+    [FDWebSocket removeMessageManagerWithUuid:_uuid];
+
 }
 
 

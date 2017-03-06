@@ -13,10 +13,12 @@
 /**
  解析收到的数据
  
- @param message message
- @param parseCompletion parseCompletion
+ @param message     message
+ @param callBacks   callBacks
+
+ @param receiveMessageBlock receiveMessageBlock
  */
-+ (void)parseMessage:(NSString *)message parseCompletion:(void(^)(FDChatMessage *))parseCompletion;
++ (void)parseMessage:(NSString *)message callBacks:(NSMutableDictionary *)callBacks receiveMessageBlock:(void(^)(FDChatMessage *))receiveMessageBlock;
 
 
 @end
