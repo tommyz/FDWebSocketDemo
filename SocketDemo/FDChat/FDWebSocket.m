@@ -96,11 +96,25 @@ typedef NS_ENUM(NSUInteger, FDWebSocketErrorCode) {
 
 + (void)sendMessage:(id)message Success:(WriteMessageSuccess)success failure:(WriteMessageFailure)failure {
     NSAssert(message, @"入参不能为空");
+    if (!message) return;
     NSLog(@"入参：%@",[message toJSONString]);
+    
     if (message && kWebSocket.webSocket.readyState == SR_OPEN) {
-        [kWebSocket sendData:[message toJSONString]];
+        // 已连接
         FDChatMessageManager *manager = [[FDChatMessageManager alloc] initWithUUID:((FDChatMessage *)message).uuid writeMessageSuccess:success writeMessageFailure:failure];
         kWebSocket.callBacks[((FDChatMessage *)message).uuid] = manager;
+        [kWebSocket sendData:[message toJSONString]];
+    }else if (message && kWebSocket.webSocket.readyState == SR_CLOSED) {
+        // 未连接：重连后再发生
+        [FDWebSocket openSocketSuccess:^{
+            FDChatMessageManager *manager = [[FDChatMessageManager alloc] initWithUUID:((FDChatMessage *)message).uuid writeMessageSuccess:success writeMessageFailure:failure];
+            kWebSocket.callBacks[((FDChatMessage *)message).uuid] = manager;
+            [kWebSocket sendData:[message toJSONString]];
+        } failure:^{
+            if (failure) {
+                failure();
+            }
+        }];
     }else{
         // 未连接状态直接返回发送失败
         if (failure) {
@@ -175,6 +189,17 @@ typedef NS_ENUM(NSUInteger, FDWebSocketErrorCode) {
 
 - (void)webSocket:(SRWebSocket *)webSocket didFailWithError:(NSError *)error {
     NSLog(@":( Websocket Failed With Error %@", [error.userInfo objectForKey:NSLocalizedDescriptionKey]);
+    // 连接失败
+    if (self.connectSocketFailure) {
+        self.connectSocketFailure();
+        [self cleanBlock];
+    }else if (self.callBacks.allValues.count == 1) {
+        // 如果只有一个待处理CallBack 则调用该回调
+        FDChatMessageManager *manager = self.callBacks.allValues[0];
+        [manager setMessageFailure];
+        [self.callBacks removeAllObjects];
+    }
+    
     switch (error.code) {
         case Error_Writing_To_Stream:
         {
@@ -238,6 +263,11 @@ typedef NS_ENUM(NSUInteger, FDWebSocketErrorCode) {
         [self cleanBlock];
     // 被动断开
     }else if (self.exceptionDisconnectBlock) {
+        [FDWebSocket openSocketSuccess:^{
+            NSLog(@"重连成功");
+        } failure:^{
+            NSLog(@"重连失败");
+        }];
         self.exceptionDisconnectBlock();
     }
     
