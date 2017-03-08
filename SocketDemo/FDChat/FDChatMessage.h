@@ -41,7 +41,7 @@ static NSString *const FDChatType_HEART                    = @"HEART";          
 // 接收命令
 static NSString *const FDChatType_INVESTIGATION_SERVICE    = @"INVESTIGATION_SERVICE";  // 服务器发起评分提示
 static NSString *const FDChatType_CHATTING_SERVICE         = @"CHATTING_SERVICE";       // 客服回复
-static NSString *const FDChatType_STOP_CHAT_SERVICE        = @"KEFU_LEAVE";             // 客服结束聊天
+static NSString *const FDChatType_STOP_CHAT_SERVICE        = @"STOP_CHAT_SERVICE";             // 客服结束聊天
 static NSString *const FDChatType_ULN_SERVICE              = @"ULN_SERVICE";            // 服务器主动断开
 
 
