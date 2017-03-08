@@ -15,8 +15,8 @@
 // test
 //#define SocketUrl @"ws://121.40.165.18:8088"
 // dev
-#define SocketUrl @"ws://kf-app.test.fruitday.com/chat"
-#define kWebSocket     [FDWebSocket shareInstance]
+#define SocketUrl       @"ws://kf-app.test.fruitday.com/chat"
+#define kWebSocket      [FDWebSocket shareInstance]
 
 // enum
 typedef NS_ENUM(NSUInteger, FDWebSocketErrorCode) {
@@ -155,6 +155,7 @@ typedef NS_ENUM(NSUInteger, FDWebSocketErrorCode) {
         
 #warning 登陆信息 connect_id
         NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:SocketUrl]];
+        [request setValue:FDChatSource forHTTPHeaderField:@"chatSource"];
         [request setValue:@"292d4f83f7f5ab3edbf484eeb8ce5149" forHTTPHeaderField:@"connectId"];
         self.webSocket = [[SRWebSocket alloc] initWithURLRequest:request];
         self.webSocket.delegate = self;

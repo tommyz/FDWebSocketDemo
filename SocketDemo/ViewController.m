@@ -8,6 +8,7 @@
 
 #import "ViewController.h"
 #import "FDWebSocket.h"
+#import "FDChatMessage.h"
 
 @interface ViewController ()
 @property (weak, nonatomic) IBOutlet UITextField *inputView;
@@ -31,6 +32,12 @@
     
     [FDWebSocket setReceiveMessageBlock:^(FDChatMessage *message) {
         NSLog(@"收到信息:%@",message);
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:message.chatType
+                                                            message:[NSString stringWithFormat:@"%@:%@",message.msgType,message.msg]
+                                                           delegate:self
+                                                  cancelButtonTitle:@"ok"
+                                                  otherButtonTitles: nil];
+        [alertView show];
     }];
 }
 

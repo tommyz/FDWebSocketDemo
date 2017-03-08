@@ -86,7 +86,7 @@ typedef NS_ENUM(NSUInteger, FDMessageSendMsgType) {
     chatMessage.visitor.name = @"xietao3";
     chatMessage.visitor.uid = @"xietao3";
     chatMessage.uuid = [self uuidString];
-    chatMessage.chatSource = @"IOS";
+    chatMessage.chatSource = FDChatSource;
     
     
     switch (chatType) {

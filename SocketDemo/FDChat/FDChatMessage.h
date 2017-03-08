@@ -31,26 +31,28 @@ typedef NS_ENUM(NSUInteger, FDChatStatusCode) {
 
 /*----------- ChatType ----------------*/
 // 发送命令
-static NSString *const FDChatType_LINK                     = @"LINK"; // 建立连接
-static NSString *const FDChatType_FIRST_CHAT               = @"FIRST_CHAT"; // 开始聊天
-static NSString *const FDChatType_CHATING                  = @"CHATING"; // 发送消息
-static NSString *const FDChatType_INVESTIGATION            = @"INVESTIGATION"; // 提交评分
-static NSString *const FDChatType_ULN                      = @"ULN"; // 用户主动断开
-static NSString *const FDChatType_HEART                    = @"HEART"; // 心跳
+static NSString *const FDChatType_LINK                     = @"LINK";               // 建立连接
+static NSString *const FDChatType_FIRST_CHAT               = @"FIRST_CHAT";         // 开始聊天
+static NSString *const FDChatType_CHATING                  = @"CHATING";            // 发送消息
+static NSString *const FDChatType_INVESTIGATION            = @"INVESTIGATION";      // 提交评分
+static NSString *const FDChatType_ULN                      = @"ULN";                // 用户主动断开
+static NSString *const FDChatType_HEART                    = @"HEART";              // 心跳
 
 // 接收命令
-static NSString *const FDChatType_INVESTIGATION_SERVICE    = @"INVESTIGATION_SERVICE"; // 服务器发起评分提示
-static NSString *const FDChatType_CHATTING_SERVICE         = @"CHATTING_SERVICE"; // 客服回复
-static NSString *const FDChatType_STOP_CHAT_SERVICE        = @"STOP_CHAT_SERVICE"; // 服务器结束聊天
-static NSString *const FDChatType_ULN_SERVICE              = @"ULN_SERVICE"; // 服务器主动断开
+static NSString *const FDChatType_INVESTIGATION_SERVICE    = @"INVESTIGATION_SERVICE";  // 服务器发起评分提示
+static NSString *const FDChatType_CHATTING_SERVICE         = @"CHATTING_SERVICE";       // 客服回复
+static NSString *const FDChatType_STOP_CHAT_SERVICE        = @"KEFU_LEAVE";             // 客服结束聊天
+static NSString *const FDChatType_ULN_SERVICE              = @"ULN_SERVICE";            // 服务器主动断开
 
 
 /*----------- msgType ----------------*/
-static NSString *const FDChatMsgTypeText        = @"text"; // 文本
-static NSString *const FDChatMsgTypeImg         = @"img"; // 图片
-static NSString *const FDChatMsgTypeProduct     = @"product"; // 商品
-static NSString *const FDChatMsgTypeOrder       = @"order"; // 订单
+static NSString *const FDChatMsgTypeText        = @"text";      // 文本
+static NSString *const FDChatMsgTypeImg         = @"img";       // 图片
+static NSString *const FDChatMsgTypeProduct     = @"product";   // 商品
+static NSString *const FDChatMsgTypeOrder       = @"order";     // 订单
 
+
+#define FDChatSource      @"IOS"
 
 
 @class FDChatMessageVisitor;
