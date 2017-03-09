@@ -284,10 +284,10 @@
     
     //1.把消息发送给服务器
     [FDWebSocket sendMessage:message Success:^{
-        blockMessage.messageState = FDChatMessageStateSendSuccess;
+        blockMessage.messageSendState = FDChatMessageSendStateSendSuccess;
         [weakself.chatTableView reloadData];
     } failure:^{
-        message.messageState = FDChatMessageStateSendFailure;
+        message.messageSendState = FDChatMessageSendStateSendFailure;
         [weakself.chatTableView reloadData];
     }];
     
@@ -331,7 +331,7 @@
 - (IBAction)onSendMessagePress:(id)sender {
     FDChatMessage *message = [FDChatMessageBuilder buildTextMessage:self.  inputTextView.text];
     message.chatMessageBy = FDChatMessageByCustomer;
-    message.messageState = FDChatMessageStateSending;
+    message.messageSendState = FDChatMessageSendStateSending;
     [self sendMessage:message isReSend:NO];
 }
 
@@ -377,7 +377,7 @@
     if ([text isEqualToString: @"\n"]) {
         FDChatMessage *message = [FDChatMessageBuilder buildTextMessage:self.  inputTextView.text];
         message.chatMessageBy = FDChatMessageByCustomer;
-        message.messageState = FDChatMessageStateSending;
+        message.messageSendState = FDChatMessageSendStateSending;
         [self sendMessage:message isReSend:NO];
         return  NO;
     }
@@ -416,7 +416,7 @@
 
 -(void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
     if(buttonIndex == 1 && alertView.tag == 1){
-        self.failMessage.messageState = FDChatMessageStateSending;
+        self.failMessage.messageSendState = FDChatMessageSendStateSending;
         [self sendMessage:self.failMessage isReSend:YES];
     }
 }

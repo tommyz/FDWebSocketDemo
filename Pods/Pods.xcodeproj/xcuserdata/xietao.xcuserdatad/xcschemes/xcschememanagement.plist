@@ -8,16 +8,27 @@
 		<dict>
 			<key>isShown</key>
 			<false/>
+			<key>orderHint</key>
+			<integer>1</integer>
+		</dict>
+		<key>MJRefresh.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>4</integer>
 		</dict>
 		<key>Pods-SocketDemo.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
+			<key>orderHint</key>
+			<integer>2</integer>
 		</dict>
 		<key>SocketRocket.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
+			<key>orderHint</key>
+			<integer>3</integer>
 		</dict>
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
@@ -27,12 +38,32 @@
 			<key>primary</key>
 			<true/>
 		</dict>
+		<key>04CF549EBEEE7BC87AEAE35397184D94</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>53E7E9D15B3EFBCB998E237DE5EA8695</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
 		<key>763591988D7BE2D0C147DBA9C743784A</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
+		<key>9822C6D0A59178AA68E3A78A31D600B9</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
 		<key>E89EA0620E22EDB775A7C107518644DD</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>EB29AC3B83B1A281518C46167082F819</key>
 		<dict>
 			<key>primary</key>
 			<true/>

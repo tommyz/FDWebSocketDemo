@@ -41,29 +41,33 @@ static NSString *const FDChatType_HEART                    = @"HEART";          
 // 接收命令
 static NSString *const FDChatType_INVESTIGATION_SERVICE    = @"INVESTIGATION_SERVICE";  // 服务器发起评分提示
 static NSString *const FDChatType_CHATTING_SERVICE         = @"CHATTING_SERVICE";       // 客服回复
-static NSString *const FDChatType_STOP_CHAT_SERVICE        = @"STOP_CHAT_SERVICE";             // 客服结束聊天
+static NSString *const FDChatType_STOP_CHAT_SERVICE        = @"STOP_CHAT_SERVICE";      // 客服结束聊天
 static NSString *const FDChatType_ULN_SERVICE              = @"ULN_SERVICE";            // 服务器主动断开
+static NSString *const FDChatType_NOT_ACTIVE               = @"NOT_ACTIVE";             // 暂无客服
 
 
 /*----------- msgType ----------------*/
 static NSString *const FDChatMsgTypeText        = @"text";      // 文本
-static NSString *const FDChatMsgTypeImg         = @"img";       // 图片
+static NSString *const FDChatMsgTypeImg         = @"image";     // 图片
 static NSString *const FDChatMsgTypeProduct     = @"product";   // 商品
 static NSString *const FDChatMsgTypeOrder       = @"order";     // 订单
 
+/*----------- 消息来源 ----------------*/
 typedef NS_ENUM(NSInteger,FDChatMessageBy) {
     FDChatMessageByServicer = 0,      //客服发的消息
     FDChatMessageByCustomer,          //客户发的消息
     FDChatMessageBySystem             //系统消息
 };
 
+/*----------- 消息发送状态 ----------------*/
+typedef NS_ENUM(NSInteger,FDChatMessageState) {
+    FDChatMessageSendStateSending = 0,         //消息发送中
+    FDChatMessageSendStateSendSuccess,         //消息发送成功
+    FDChatMessageSendStateSendFailure          //系统发送失败
+};
+
 #define FDChatSource      @"IOS"
 
-typedef NS_ENUM(NSInteger,FDChatMessageState) {
-    FDChatMessageStateSending = 0,         //消息发送中
-    FDChatMessageStateSendSuccess,         //消息发送成功
-    FDChatMessageStateSendFailure          //系统发送失败
-};
 
 @class FDChatMessageVisitor;
 @interface FDChatMessage : JSONModel
@@ -82,10 +86,7 @@ typedef NS_ENUM(NSInteger,FDChatMessageState) {
 // optional
 @property (strong, nonatomic) NSString *msgType;
 @property (strong, nonatomic) NSString *msg;
-@property (nonatomic, copy)NSString *time;
-@property (nonatomic, assign) FDChatMessageBy chatMessageBy ;
-@property (nonatomic, assign) BOOL hideTime;
-@property (nonatomic, assign) FDChatMessageState messageState;
+@property (nonatomic, copy) NSString *time;
 
 
 // 系统入参
@@ -101,7 +102,16 @@ typedef NS_ENUM(NSInteger,FDChatMessageState) {
 @property (strong, nonatomic) NSString *isScored;
 
 // 其他
+
+// 是否为应答的消息
 @property (assign, nonatomic) BOOL isReply;
+// 聊天页面是否需要显示消息时间
+@property (nonatomic, assign) BOOL hideTime;
+// 消息来源
+@property (nonatomic, assign) FDChatMessageBy chatMessageBy;
+// 消息发送状态
+@property (nonatomic, assign) FDChatMessageState messageSendState;
+
 @end
 
 @interface FDChatMessageVisitor : JSONModel

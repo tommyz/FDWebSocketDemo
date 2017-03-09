@@ -115,10 +115,10 @@
     self.redButton.frame = messageFrame.redButtonF;
     if (message.chatMessageBy == FDChatMessageByCustomer) {
         [self.textBtn setBackgroundImage:[UIImage imageNamed:@"chat_left_bg"] forState:UIControlStateNormal];
-        if (message.messageState == FDChatMessageStateSending) {
+        if (message.messageSendState == FDChatMessageSendStateSending) {
             [self.activityView startAnimating];
             self.redButton.hidden = YES;
-        }else if (message.messageState == FDChatMessageStateSendSuccess) {
+        }else if (message.messageSendState == FDChatMessageSendStateSendSuccess) {
             [self.activityView stopAnimating];
             self.redButton.hidden = YES;
         }else {

@@ -58,11 +58,15 @@
 
 - (IBAction)disconnectAction:(id)sender {
 
-    [FDWebSocket closeSocketCompletionBlock:^{
-        NSLog(@"断开成功");
+   
+    
+    [FDWebSocket sendMessage:[FDChatMessageBuilder buildDisconnectMessage] Success:^{
+        [FDWebSocket closeSocketCompletionBlock:^{
+            NSLog(@"断开成功");
+        }];
+    } failure:^{
+        
     }];
-
-
 }
 
 - (IBAction)isConnectedAction:(id)sender {
