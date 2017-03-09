@@ -18,14 +18,6 @@
     return YES;
 }
 
-- (NSString *)time{
-    NSDate* date = [NSDate dateWithTimeIntervalSince1970:[self.timestamp doubleValue]/ 1000.0];
-    NSDateFormatter *dateFt = [[NSDateFormatter alloc]init];
-    dateFt.dateFormat = @"HH:mm";
-    NSString* dateString = [dateFt stringFromDate:date];
-    return dateString;
-}
-
 @end
 
 

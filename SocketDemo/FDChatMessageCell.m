@@ -9,6 +9,7 @@
 #import "FDChatMessageCell.h"
 #import "FDChatMessage.h"
 #import "FDChatMessageFrame.h"
+#import "NSString+Helper.h"
 
 @interface FDChatMessageCell ()
 /**
@@ -94,7 +95,7 @@
     FDChatMessage *message = messageFrame.message;
     
     //1.时间
-    self.timeLbl.text = message.time;
+    self.timeLbl.text = [NSString stringFromDate:message.timeDate].formatTime;
     self.timeLbl.frame = messageFrame.timeF;
     
     //2.头像

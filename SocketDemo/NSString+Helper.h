@@ -21,6 +21,7 @@
 + (NSDate *)dateFromString:(NSString *)string;
 + (NSString*)stringFromTimestamp:(NSString *)timestamp;
 + (NSString *)formatPostDate:(NSDate *)date;
+- (NSString *)formatTime;
 #pragma mark - 正则
 - (BOOL)isValidEmail;
 - (BOOL)isValidPhoneNumber;

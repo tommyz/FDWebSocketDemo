@@ -7,6 +7,8 @@
 //
 
 #import "NSString+Helper.h"
+#import "NSDate+FDExtension.h"
+
 #define EmojiCodeToSymbol(c) ((((0x808080F0 | (c & 0x3F000) >> 4) | (c & 0xFC0) << 10) | (c & 0x1C0000) << 18) | (c & 0x3F) << 24)
 
 @implementation NSString (Helper)
@@ -259,6 +261,27 @@
     }
     
     return returnValue;
+}
+
+- (NSString *)formatTime{
+    NSDate *date = [NSString dateFromString:self];
+    if (!date) return @"";
+    NSDateFormatter *fmt = [[NSDateFormatter alloc] init];
+    if ([date isThisYear]) { // 今年
+        if ([date isYesterday]) { // 昨天
+            fmt.dateFormat = @"昨天 HH:mm";
+            return [fmt stringFromDate:date];
+        } else if ([date isToday]) { // 今天
+            fmt.dateFormat = @"HH:mm";
+            return [fmt stringFromDate:date];
+        } else { // 今年的其他日子
+            fmt.dateFormat = @"MM-dd";
+            return [fmt stringFromDate:date];
+        }
+    } else { // 非今年
+        fmt.dateFormat = @"yyyy-MM-dd";
+        return [fmt stringFromDate:date];
+    }
 }
 
 @end

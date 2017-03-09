@@ -291,9 +291,19 @@
 }
 
 - (void)addMessage:(FDChatMessage *)message{
-    //是否需要隐藏时间
-    FDChatMessageFrame *lastFm = [self.messageFrames lastObject];
-    message.hideTime = [lastFm.message.time isEqualToString:message.time];
+    if (self.messageFrames.count > 0) {
+        FDChatMessageFrame *lastFm = [self.messageFrames lastObject];
+                
+        // 日历对象（方便比较两个日期之间的差距）
+        NSCalendar *calendar = [NSCalendar currentCalendar];
+        
+        // NSCalendarUnit枚举代表想获得哪些差值
+        NSCalendarUnit unit = NSCalendarUnitYear | NSCalendarUnitMonth | NSCalendarUnitDay | NSCalendarUnitHour | NSCalendarUnitMinute | NSCalendarUnitSecond;
+        
+        // 计算两个日期之间的差值
+        NSDateComponents *cmps = [calendar components:unit fromDate:lastFm.message.timeDate toDate:message.timeDate options:0];
+        message.hideTime = cmps.minute < 30 ? YES : NO;
+    }
     
     FDChatMessageFrame *fm = [[FDChatMessageFrame alloc]init];
     fm.message = message;

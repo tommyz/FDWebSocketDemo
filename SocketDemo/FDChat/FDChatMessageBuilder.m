@@ -87,7 +87,7 @@ typedef NS_ENUM(NSUInteger, FDMessageSendMsgType) {
     chatMessage.visitor.uid = @"xietao3";
     chatMessage.uuid = [self uuidString];
     chatMessage.chatSource = FDChatSource;
-    
+    chatMessage.timeDate = [NSDate date];
     
     switch (chatType) {
         // 连接服务器 传系统入参 获取离线消息

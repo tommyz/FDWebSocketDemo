@@ -156,7 +156,7 @@ typedef NS_ENUM(NSUInteger, FDWebSocketErrorCode) {
 #warning 登陆信息 connect_id
         NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:SocketUrl]];
         [request setValue:FDChatSource forHTTPHeaderField:@"chatSource"];
-        [request setValue:@"292d4f83f7f5ab3edbf484eeb8ce5149" forHTTPHeaderField:@"connectId"];
+        [request setValue:@"9b54db5ee1ac9e9cc2e321c7a6a54511" forHTTPHeaderField:@"connectId"];
         self.webSocket = [[SRWebSocket alloc] initWithURLRequest:request];
         self.webSocket.delegate = self;
         [self.webSocket open];

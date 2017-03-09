@@ -86,7 +86,7 @@ typedef NS_ENUM(NSInteger,FDChatMessageState) {
 // optional
 @property (strong, nonatomic) NSString *msgType;
 @property (strong, nonatomic) NSString *msg;
-@property (nonatomic, copy) NSString *time;
+@property (nonatomic, strong) NSDate *timeDate;
 
 
 // 系统入参
