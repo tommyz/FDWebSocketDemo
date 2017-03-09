@@ -61,9 +61,7 @@
 #warning user;
     chatMessage.visitor.name = @"xietao3";
     chatMessage.visitor.uid = @"xietao3";
-    chatMessage.uuid = [self uuidString];
     chatMessage.chatSource = FDChatSource;
-    chatMessage.timeDate = [NSDate date];
     chatMessage.chatType = chatType;
     
     // 根据不同类型注入不同信息
@@ -105,16 +103,5 @@
     return chatMessage;
 }
 
-
-#pragma mark UUID
-+ (NSString *)uuidString
-{
-    CFUUIDRef uuid_ref = CFUUIDCreate(NULL);
-    CFStringRef uuid_string_ref= CFUUIDCreateString(NULL, uuid_ref);
-    NSString *uuid = [NSString stringWithString:(__bridge NSString *)uuid_string_ref];
-    CFRelease(uuid_ref);
-    CFRelease(uuid_string_ref);
-    return [uuid lowercaseString];
-}
 
 @end
