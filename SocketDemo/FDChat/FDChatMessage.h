@@ -51,9 +51,19 @@ static NSString *const FDChatMsgTypeImg         = @"img";       // 图片
 static NSString *const FDChatMsgTypeProduct     = @"product";   // 商品
 static NSString *const FDChatMsgTypeOrder       = @"order";     // 订单
 
+typedef NS_ENUM(NSInteger,FDChatMessageBy) {
+    FDChatMessageByServicer = 0,      //客服发的消息
+    FDChatMessageByCustomer,          //客户发的消息
+    FDChatMessageBySystem             //系统消息
+};
 
 #define FDChatSource      @"IOS"
 
+typedef NS_ENUM(NSInteger,FDChatMessageState) {
+    FDChatMessageStateSending = 0,         //消息发送中
+    FDChatMessageStateSendSuccess,         //消息发送成功
+    FDChatMessageStateSendFailure          //系统发送失败
+};
 
 @class FDChatMessageVisitor;
 @interface FDChatMessage : JSONModel
@@ -72,6 +82,11 @@ static NSString *const FDChatMsgTypeOrder       = @"order";     // 订单
 // optional
 @property (strong, nonatomic) NSString *msgType;
 @property (strong, nonatomic) NSString *msg;
+@property (nonatomic, copy)NSString *time;
+@property (nonatomic, assign) FDChatMessageBy chatMessageBy ;
+@property (nonatomic, assign) BOOL hideTime;
+@property (nonatomic, assign) FDChatMessageState messageState;
+
 
 // 系统入参
 @property (strong, nonatomic) NSString *chatSource;
@@ -84,7 +99,6 @@ static NSString *const FDChatMsgTypeOrder       = @"order";     // 订单
 // 评分
 @property (strong, nonatomic) NSString *score;
 @property (strong, nonatomic) NSString *isScored;
-
 
 // 其他
 @property (assign, nonatomic) BOOL isReply;
