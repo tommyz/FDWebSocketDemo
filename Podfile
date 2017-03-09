@@ -6,5 +6,6 @@ target 'SocketDemo' do
 pod 'SocketRocket'
 pod 'JSONModel'
 pod 'MJRefresh'
-
+pod 'AFNetworking'
+pod 'SDWebImage'
 end

@@ -24,6 +24,7 @@
 		10986F5E1E6D5CBA00789DCE /* NSString+Helper.m in Sources */ = {isa = PBXBuildFile; fileRef = 10986F5D1E6D5CBA00789DCE /* NSString+Helper.m */; };
 		933179101E6D43470093E49C /* FDChatMessageBuilder.m in Sources */ = {isa = PBXBuildFile; fileRef = 9331790F1E6D43470093E49C /* FDChatMessageBuilder.m */; };
 		933179131E6D4BA80093E49C /* FDChatMessageParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 933179121E6D4BA80093E49C /* FDChatMessageParser.m */; };
+		93735E4A1E70FBC600981258 /* FDChatFileUploader.m in Sources */ = {isa = PBXBuildFile; fileRef = 93735E491E70FBC600981258 /* FDChatFileUploader.m */; };
 		938B1C5F1E03987B0079F8CC /* FDChatMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 938B1C5A1E03987B0079F8CC /* FDChatMessage.m */; };
 		938B1C601E03987B0079F8CC /* FDChatMessageManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 938B1C5C1E03987B0079F8CC /* FDChatMessageManager.m */; };
 		938B1C611E03987B0079F8CC /* FDWebSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 938B1C5E1E03987B0079F8CC /* FDWebSocket.m */; };
@@ -70,6 +71,8 @@
 		9331790F1E6D43470093E49C /* FDChatMessageBuilder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FDChatMessageBuilder.m; sourceTree = "<group>"; };
 		933179111E6D4BA80093E49C /* FDChatMessageParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FDChatMessageParser.h; sourceTree = "<group>"; };
 		933179121E6D4BA80093E49C /* FDChatMessageParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FDChatMessageParser.m; sourceTree = "<group>"; };
+		93735E481E70FBC600981258 /* FDChatFileUploader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FDChatFileUploader.h; sourceTree = "<group>"; };
+		93735E491E70FBC600981258 /* FDChatFileUploader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FDChatFileUploader.m; sourceTree = "<group>"; };
 		938B1C591E03987B0079F8CC /* FDChatMessage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FDChatMessage.h; sourceTree = "<group>"; };
 		938B1C5A1E03987B0079F8CC /* FDChatMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FDChatMessage.m; sourceTree = "<group>"; };
 		938B1C5B1E03987B0079F8CC /* FDChatMessageManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FDChatMessageManager.h; sourceTree = "<group>"; };
@@ -130,6 +133,8 @@
 				9331790F1E6D43470093E49C /* FDChatMessageBuilder.m */,
 				933179111E6D4BA80093E49C /* FDChatMessageParser.h */,
 				933179121E6D4BA80093E49C /* FDChatMessageParser.m */,
+				93735E481E70FBC600981258 /* FDChatFileUploader.h */,
+				93735E491E70FBC600981258 /* FDChatFileUploader.m */,
 			);
 			path = FDChat;
 			sourceTree = "<group>";
@@ -346,6 +351,7 @@
 				10986F581E6D5C4300789DCE /* FDInputTextView.m in Sources */,
 				10986F541E6D5C4300789DCE /* FDEmotion.m in Sources */,
 				101C39021E6FDFEF00688D8F /* FDChatViewController.m in Sources */,
+				93735E4A1E70FBC600981258 /* FDChatFileUploader.m in Sources */,
 				93E42A4B1DCC778E0005ED14 /* AppDelegate.m in Sources */,
 				93E42A481DCC778E0005ED14 /* main.m in Sources */,
 			);

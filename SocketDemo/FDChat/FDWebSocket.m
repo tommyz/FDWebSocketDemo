@@ -18,7 +18,7 @@
 #define SocketUrl       @"ws://kf-app.test.fruitday.com/chat"
 #define kWebSocket      [FDWebSocket shareInstance]
 
-// enum
+// error enum
 typedef NS_ENUM(NSUInteger, FDWebSocketErrorCode) {
     Timeout_Connecting_To_Server = 504,
     Received_Bad_Response_Code_From_Server = 2132,
@@ -156,7 +156,7 @@ typedef NS_ENUM(NSUInteger, FDWebSocketErrorCode) {
 #warning 登陆信息 connect_id
         NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:SocketUrl]];
         [request setValue:FDChatSource forHTTPHeaderField:@"chatSource"];
-        [request setValue:@"62e4cc122b76d114753b11d08edd3be2" forHTTPHeaderField:@"connectId"];
+        [request setValue:@"292d4f83f7f5ab3edbf484eeb8ce5149" forHTTPHeaderField:@"connectId"];
         self.webSocket = [[SRWebSocket alloc] initWithURLRequest:request];
         self.webSocket.delegate = self;
         [self.webSocket open];
