@@ -14,15 +14,19 @@ PODS:
   - AFNetworking/Serialization (3.1.0)
   - AFNetworking/UIKit (3.1.0):
     - AFNetworking/NSURLSession
+  - FMDB (2.6.2):
+    - FMDB/standard (= 2.6.2)
+  - FMDB/standard (2.6.2)
   - JSONModel (1.2.0)
   - MJRefresh (3.1.9)
-  - SDWebImage (3.8.2):
-    - SDWebImage/Core (= 3.8.2)
-  - SDWebImage/Core (3.8.2)
+  - SDWebImage (3.8.1):
+    - SDWebImage/Core (= 3.8.1)
+  - SDWebImage/Core (3.8.1)
   - SocketRocket (0.5.1)
 
 DEPENDENCIES:
   - AFNetworking
+  - FMDB
   - JSONModel
   - MJRefresh
   - SDWebImage
@@ -30,11 +34,12 @@ DEPENDENCIES:
 
 SPEC CHECKSUMS:
   AFNetworking: 5e0e199f73d8626b11e79750991f5d173d1f8b67
+  FMDB: 854a0341b4726e53276f2a8996f06f1b80f9259a
   JSONModel: 12523685c4b623553ccf844bbbf7007624317b2c
   MJRefresh: c5f1f1653e5a1b932c90f78074f2bc86f3f9bd5e
-  SDWebImage: 098e97e6176540799c27e804c96653ee0833d13c
+  SDWebImage: 35f9627a3e44b4f292a8a8ce6a531fa488239b91
   SocketRocket: d57c7159b83c3c6655745cd15302aa24b6bae531
 
-PODFILE CHECKSUM: 2363bf94655d3890925e4a5cfc9166be082772db
+PODFILE CHECKSUM: 4ec24fc55d9a3856305689227238144d16f52551
 
 COCOAPODS: 1.0.1

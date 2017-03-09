@@ -11,6 +11,6 @@
 @interface FDChatMessageCell : UITableViewCell
 
 @property(nonatomic, strong) FDChatMessageFrame *messageFrame;
-@property (copy ,nonatomic) void (^sendFailMessageBlock)(FDChatMessage *);
+@property (copy ,nonatomic) void (^sendFailMessageBlock)(FDChatMessageFrame *);
 
 @end

@@ -46,5 +46,4 @@
 
 @implementation FDChatMessageVisitor
 
-
 @end

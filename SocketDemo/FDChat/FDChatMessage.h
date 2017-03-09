@@ -124,7 +124,7 @@ typedef NS_ENUM(NSInteger,FDChatMessageState) {
 
 @end
 
-@interface FDChatMessageVisitor : JSONModel
+@interface FDChatMessageVisitor : JSONModel 
 
 @property (strong, nonatomic) NSString *name;
 @property (strong, nonatomic) NSString *uid;
