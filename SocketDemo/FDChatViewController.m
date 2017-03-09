@@ -18,6 +18,7 @@
 #import "NSString+Helper.h"
 #import "MJRefresh.h"
 #import "FDWebSocket.h"
+#import "FDChatMessageSqlite.h"
 
 @interface FDChatViewController ()<FDChatMoreViewDelegate,UITextViewDelegate>
 @property (weak, nonatomic) IBOutlet UITableView *chatTableView;
@@ -42,7 +43,7 @@
 /** chatTableView的footer */
 @property (nonatomic, strong) MJRefreshBackFooter *mj_footer;
 /** 保存失败消息 */
-@property (nonatomic, strong) FDChatMessage *failMessage;
+@property (nonatomic, strong) FDChatMessageFrame *failMessageFrame;
 
 @end
 
@@ -161,7 +162,10 @@
 - (NSMutableArray *)messageFrames{
     if (_messageFrames == nil) {
         _messageFrames = [NSMutableArray array];
-#warning 把历史聊天数据加入数组
+        NSArray *historyMessageFrames = [FDChatMessageSqlite getMessageFrames];
+        if (historyMessageFrames.count > 0) {
+            [_messageFrames addObjectsFromArray:historyMessageFrames];
+        }
     }
     return _messageFrames;
 }
@@ -280,7 +284,11 @@
     //1.把消息发送给服务器
     [FDWebSocket sendMessage:message Success:^{
         blockMessage.messageSendState = FDChatMessageSendStateSendSuccess;
+        if (message == self.failMessageFrame.message) {//如果是重发消息,要更新此条在数据库的状态
+            [FDChatMessageSqlite updateMessageFrame:weakself.failMessageFrame];
+        }
         [weakself.chatTableView reloadData];
+        
     } failure:^{
         message.messageSendState = FDChatMessageSendStateSendFailure;
         [weakself.chatTableView reloadData];
@@ -312,7 +320,9 @@
     
     FDChatMessageFrame *fm = [[FDChatMessageFrame alloc]init];
     fm.message = message;
+    [FDChatMessageSqlite addMessageFrame:fm];
     [self.messageFrames addObject:fm];
+    
 }
 
 - (void)reloadUI{
@@ -401,8 +411,8 @@
     if (cell == nil) {
         cell = [[FDChatMessageCell alloc]initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:ID];
     }
-    [cell setSendFailMessageBlock:^(FDChatMessage *message) {
-        weakSelf.failMessage = message;
+    [cell setSendFailMessageBlock:^(FDChatMessageFrame *messageFrame) {
+        weakSelf.failMessageFrame = messageFrame;
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:@"重发该消息？" delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"重发",nil];
         alert.tag = 1;
         [alert show];
@@ -421,8 +431,8 @@
 
 -(void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
     if(buttonIndex == 1 && alertView.tag == 1){
-        self.failMessage.messageSendState = FDChatMessageSendStateSending;
-        [self sendMessage:self.failMessage isReSend:YES];
+        self.failMessageFrame.message.messageSendState = FDChatMessageSendStateSending;
+        [self sendMessage:self.failMessageFrame.message isReSend:YES];
     }
 }
 

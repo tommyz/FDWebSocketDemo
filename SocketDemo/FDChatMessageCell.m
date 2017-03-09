@@ -136,7 +136,7 @@
 
 - (void)sendFailMessage{
     if (self.sendFailMessageBlock) {
-        self.sendFailMessageBlock(self.messageFrame.message);
+        self.sendFailMessageBlock(self.messageFrame);
     }
 }
 

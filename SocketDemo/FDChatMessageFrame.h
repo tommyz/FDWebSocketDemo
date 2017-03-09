@@ -7,9 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "JSONModel.h"
 
 @class FDChatMessage;
-@interface FDChatMessageFrame : NSObject
+@interface FDChatMessageFrame : JSONModel
 /**
  *  正文的frame
  */

@@ -8,4 +8,6 @@ pod 'JSONModel'
 pod 'MJRefresh'
 pod 'AFNetworking'
 pod 'SDWebImage'
+pod ‘FMDB’
+
 end
