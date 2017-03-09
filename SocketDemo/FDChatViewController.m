@@ -94,6 +94,7 @@
         message.chatMessageBy = FDChatMessageByServicer;
         [weakSelf addMessage:message];
         [weakSelf.chatTableView reloadData];
+        [weakSelf  chatTableViewScrollToBottom];
     }];
     
 #warning 
@@ -154,19 +155,8 @@
 
 - (NSMutableArray *)messageFrames{
     if (_messageFrames == nil) {
-//        NSArray *array = nil;
-        
         _messageFrames = [NSMutableArray array];
-//        for (NSDictionary *dict in array) {
-//            FDChatMessage *msg = [[FDChatMessage alloc]initWithDictionary:dict error:nil];
-//            //是否需要隐藏时间
-//            FDChatMessageFrame *lastFm = [arr lastObject];
-//            msg.hideTime = [lastFm.message.time isEqualToString:msg.time];
-//            FDChatMessageFrame *fm = [[FDChatMessageFrame alloc]init];
-//            fm.message = msg;
-//            [arr addObject:fm];
-//        }
-//        _messageFrames = arr;
+#warning 把历史聊天数据加入数组
     }
     return _messageFrames;
 }
@@ -375,7 +365,7 @@
 
 - (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text{
     if ([text isEqualToString: @"\n"]) {
-        FDChatMessage *message = [FDChatMessageBuilder buildTextMessage:self.  inputTextView.text];
+        FDChatMessage *message = [FDChatMessageBuilder buildTextMessage:self.inputTextView.text];
         message.chatMessageBy = FDChatMessageByCustomer;
         message.messageSendState = FDChatMessageSendStateSending;
         [self sendMessage:message isReSend:NO];

@@ -61,6 +61,7 @@
         
         //3.正文
         UIButton *btn = [[UIButton alloc]init];
+        btn.userInteractionEnabled = NO;
         btn.adjustsImageWhenHighlighted = NO; //取消高亮图片变化效果
         btn.titleLabel.font = [UIFont systemFontOfSize:15];
         btn.titleLabel.numberOfLines = 0;//自动换行
