@@ -11,12 +11,7 @@
 #import "FDChatMessageManager.h"
 #import "FDChatMessage.h"
 #import "FDChatMessageParser.h"
-
-// test
-//#define SocketUrl @"ws://121.40.165.18:8088"
-// dev
-#define SocketUrl       @"ws://kf-app.test.fruitday.com/chat"
-#define kWebSocket      [FDWebSocket shareInstance]
+#import "FDChatConfig.h"
 
 // error enum
 typedef NS_ENUM(NSUInteger, FDWebSocketErrorCode) {

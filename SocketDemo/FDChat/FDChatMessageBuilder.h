@@ -11,7 +11,7 @@
 
 @interface FDChatMessageBuilder : NSObject
 
-#pragma mark - Builder
+#pragma mark - 指令
 /**
  连接指令
  
@@ -34,7 +34,15 @@
 + (FDChatMessage *)buildDisconnectMessage;
 
 /**
- 文本信息指令
+ 心跳指令
+ 
+ @return FDChatMessage
+ */
++ (FDChatMessage *)buildHeartPacketMessage;
+
+#pragma mark - 消息
+/**
+ 文本消息
  
  @param message 消息
  @return FDChatMessage
@@ -42,7 +50,7 @@
 + (FDChatMessage *)buildTextMessage:(NSString *)message;
 
 /**
- 图片信息
+ 图片消息
  
  @param message 图片URL
  @return FDChatMessage
@@ -50,7 +58,7 @@
 + (FDChatMessage *)buildImageMessage:(NSString *)message;
 
 /**
- 商品信息
+ 商品消息
  
  @param message 商品ID
  @return FDChatMessage
@@ -58,7 +66,7 @@
 + (FDChatMessage *)buildProductMessage:(NSString *)message;
 
 /**
- 订单信息
+ 订单消息
  
  @param message 订单ID
  @return FDChatMessage
@@ -66,19 +74,12 @@
 + (FDChatMessage *)buildOrderMessage:(NSString *)message;
 
 /**
- 提交评论指令
+ 提交评论消息
  
  @param score 评分(拒绝评分给nil)
  @return FDChatMessage
  */
 + (FDChatMessage *)buildCommentWithScore:(NSString *)score;
-
-/**
- 心跳指令
- 
- @return FDChatMessage
- */
-+ (FDChatMessage *)buildHeartPacketMessage;
 
 
 @end

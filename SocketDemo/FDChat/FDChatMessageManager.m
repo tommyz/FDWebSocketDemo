@@ -8,8 +8,7 @@
 
 #import "FDChatMessageManager.h"
 #import "FDWebSocket.h"
-
-static const NSTimeInterval FDMessageTimeOutInterval = 15.0;
+#import "FDChatConfig.h"
 
 @interface FDChatMessageManager ()
 

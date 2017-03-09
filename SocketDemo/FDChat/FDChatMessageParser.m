@@ -9,6 +9,7 @@
 #import "FDChatMessageParser.h"
 #import "FDChatMessage.h"
 #import "FDChatMessageManager.h"
+#import "FDChatConfig.h"
 
 @implementation FDChatMessageParser
 

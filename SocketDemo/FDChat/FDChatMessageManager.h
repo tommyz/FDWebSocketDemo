@@ -12,7 +12,6 @@
 typedef void(^WriteMessageSuccess)();
 typedef void(^WriteMessageFailure)();
 
-
 @interface FDChatMessageManager : NSObject
 
 

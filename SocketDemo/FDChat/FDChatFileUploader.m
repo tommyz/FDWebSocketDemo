@@ -8,10 +8,7 @@
 
 #import "FDChatFileUploader.h"
 #import <AFNetworking/AFNetworking.h>
-
-// 图片压缩比例  0 ~ 1.0
-static CGFloat const imageCompressionQuality = 0.5;
-static NSString *const uploadFileUrl = @"www.baidu.com";
+#import "FDChatConfig.h"
 
 @implementation FDChatFileUploader
 

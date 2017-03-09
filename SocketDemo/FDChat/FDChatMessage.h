@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "JSONModel.h"
+#import "FDChatConfig.h"
 
 /*----------- FDChatStatusCode ----------------*/
 /**
@@ -51,6 +52,16 @@ static NSString *const FDChatMsgTypeText        = @"text";      // 文本
 static NSString *const FDChatMsgTypeImg         = @"image";     // 图片
 static NSString *const FDChatMsgTypeProduct     = @"product";   // 商品
 static NSString *const FDChatMsgTypeOrder       = @"order";     // 订单
+static NSString *const FDChatMsgTypeComment     = @"comment";   // 客服评分
+
+
+// 接收消息类型
+typedef NS_ENUM(NSUInteger, FDMessageReceiveChatType) {
+    FDMessageReceiveChatTypeComment_SERVICE = 0,
+    FDMessageReceiveChatTypeCHATTING_SERVICE,
+    FDMessageReceiveChatTypeSTOP_CHAT_SERVICE,
+    FDMessageReceiveChatTypeULN_SERVICE
+};
 
 /*----------- 消息来源 ----------------*/
 typedef NS_ENUM(NSInteger,FDChatMessageBy) {
@@ -66,7 +77,6 @@ typedef NS_ENUM(NSInteger,FDChatMessageState) {
     FDChatMessageSendStateSendFailure          //系统发送失败
 };
 
-#define FDChatSource      @"IOS"
 
 
 @class FDChatMessageVisitor;

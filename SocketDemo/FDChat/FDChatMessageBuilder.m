@@ -9,76 +9,52 @@
 #import "FDChatMessageBuilder.h"
 #import "FDChatMessage.h"
 
-typedef NS_ENUM(NSUInteger, FDMessageSendChatType) {
-    FDMessageSendChatTypeLINK = 0,
-    FDMessageSendChatTypeFIRST_CHATING,
-    FDMessageSendChatTypeCHATING,
-    FDMessageSendChatTypeComment,
-    FDMessageSendChatTypeULN,
-    FDMessageSendChatTypeHEART
-};
-
-typedef NS_ENUM(NSUInteger, FDMessageReceiveChatType) {
-    FDMessageReceiveChatTypeComment_SERVICE = 0,
-    FDMessageReceiveChatTypeCHATTING_SERVICE,
-    FDMessageReceiveChatTypeSTOP_CHAT_SERVICE,
-    FDMessageReceiveChatTypeULN_SERVICE
-};
-
-typedef NS_ENUM(NSUInteger, FDMessageSendMsgType) {
-    FDMessageSendMsgTypeNone = 0,
-    FDMessageSendMsgTypeText,
-    FDMessageSendMsgTypeImage,
-    FDMessageSendMsgTypeProduct,
-    FDMessageSendMsgTypeOrder,
-    FDMessageSendMsgTypeComment
-};
-
 @implementation FDChatMessageBuilder
 
 #pragma mark - Builder
 + (FDChatMessage *)buildConnectSocketMessage {
-    return [self buildChatCommondType:FDMessageSendChatTypeLINK];
+    return [self buildChatCommondType:FDChatType_LINK];
 }
 
 + (FDChatMessage *)buildSetupChatMessage {
-    return [self buildChatCommondType:FDMessageSendChatTypeFIRST_CHATING];
+    return [self buildChatCommondType:FDChatType_FIRST_CHAT];
 }
 
 + (FDChatMessage *)buildDisconnectMessage {
-    return [self buildChatCommondType:FDMessageSendChatTypeULN];
-}
-
-+ (FDChatMessage *)buildTextMessage:(NSString *)message {
-    return [self buildMessage:message msgType:FDMessageSendMsgTypeText chatType:FDMessageSendChatTypeCHATING];
-}
-
-+ (FDChatMessage *)buildImageMessage:(NSString *)message {
-    return [self buildMessage:message msgType:FDMessageSendMsgTypeImage chatType:FDMessageSendChatTypeCHATING];
-}
-
-+ (FDChatMessage *)buildProductMessage:(NSString *)message {
-    return [self buildMessage:message msgType:FDMessageSendMsgTypeProduct chatType:FDMessageSendChatTypeCHATING];
-}
-
-+ (FDChatMessage *)buildOrderMessage:(NSString *)message {
-    return [self buildMessage:message msgType:FDMessageSendMsgTypeOrder chatType:FDMessageSendChatTypeCHATING];
-}
-
-+ (FDChatMessage *)buildCommentWithScore:(NSString *)score {
-    return [self buildMessage:score msgType:FDMessageSendMsgTypeComment chatType:FDMessageSendChatTypeComment];
+    return [self buildChatCommondType:FDChatType_ULN];
 }
 
 + (FDChatMessage *)buildHeartPacketMessage {
-    return [self buildChatCommondType:FDMessageSendChatTypeHEART];
+    return [self buildChatCommondType:FDChatType_HEART];
 }
+
++ (FDChatMessage *)buildTextMessage:(NSString *)message {
+    return [self buildMessage:message msgType:FDChatMsgTypeText chatType:FDChatType_CHATING];
+}
+
++ (FDChatMessage *)buildImageMessage:(NSString *)message {
+    return [self buildMessage:message msgType:FDChatMsgTypeImg chatType:FDChatType_CHATING];
+}
+
++ (FDChatMessage *)buildProductMessage:(NSString *)message {
+    return [self buildMessage:message msgType:FDChatMsgTypeProduct chatType:FDChatType_CHATING];
+}
+
++ (FDChatMessage *)buildOrderMessage:(NSString *)message {
+    return [self buildMessage:message msgType:FDChatMsgTypeOrder chatType:FDChatType_CHATING];
+}
+
++ (FDChatMessage *)buildCommentWithScore:(NSString *)score {
+    return [self buildMessage:score msgType:FDChatMsgTypeComment chatType:FDChatType_INVESTIGATION];
+}
+
 
 #pragma mark Common
-+ (FDChatMessage *)buildChatCommondType:(FDMessageSendChatType)commondType {
-    return [self buildMessage:nil msgType:FDMessageSendMsgTypeNone chatType:commondType];
++ (FDChatMessage *)buildChatCommondType:(NSString *)commondType {
+    return [self buildMessage:nil msgType:nil chatType:commondType];
 }
 
-+ (FDChatMessage *)buildMessage:(NSString *)message msgType:(FDMessageSendMsgType)msgType chatType:(FDMessageSendChatType)chatType{
++ (FDChatMessage *)buildMessage:(NSString *)message msgType:(NSString *)msgType chatType:(NSString *)chatType{
     FDChatMessage *chatMessage = [[FDChatMessage alloc] init];
     
     chatMessage.visitor = [[FDChatMessageVisitor alloc] init];
@@ -88,91 +64,46 @@ typedef NS_ENUM(NSUInteger, FDMessageSendMsgType) {
     chatMessage.uuid = [self uuidString];
     chatMessage.chatSource = FDChatSource;
     chatMessage.timeDate = [NSDate date];
+    chatMessage.chatType = chatType;
     
-    switch (chatType) {
+    // 根据不同类型注入不同信息
+    if ([chatType isEqualToString:FDChatType_LINK]) {
         // 连接服务器 传系统入参 获取离线消息
-        case FDMessageSendChatTypeLINK:
-        {
-            chatMessage.chatType = FDChatType_LINK;
 #warning 系统入参
-            chatMessage.chatSource = @"IOS";
-            //            chatMessage.version = @"";
-            //            chatMessage.deviceId = @"";
-            //            chatMessage.channel = @"";
-            //            chatMessage.connectId = @"";
-            //            chatMessage.lonlat = @"";
-            //            chatMessage.address = @"";
-        }
-        break;
+        chatMessage.chatSource = @"IOS";
+        //            chatMessage.version = @"";
+        //            chatMessage.deviceId = @"";
+        //            chatMessage.channel = @"";
+        //            chatMessage.connectId = @"";
+        //            chatMessage.lonlat = @"";
+        //            chatMessage.address = @"";
+
+    }else if ([chatType isEqualToString:FDChatType_FIRST_CHAT]) {
         // 建立会话 分配客服
-        case FDMessageSendChatTypeFIRST_CHATING:
-        {
-            chatMessage.chatType = FDChatType_FIRST_CHAT;
-        }
-        break;
+
+    }else if ([chatType isEqualToString:FDChatType_CHATING]) {
         // 正常聊天信息
-        case FDMessageSendChatTypeCHATING:
-        {
-            chatMessage.chatType = FDChatType_CHATING;
-            switch (msgType) {
-                case FDMessageSendMsgTypeText:
-                {
-                    chatMessage.msgType = FDChatMsgTypeText;
-                }
-                break;
-                case FDMessageSendMsgTypeImage:
-                {
-                    chatMessage.msgType = FDChatMsgTypeImg;
-                }
-                break;
-                case FDMessageSendMsgTypeProduct:
-                {
-                    chatMessage.msgType = FDChatMsgTypeProduct;
-                }
-                break;
-                case FDMessageSendMsgTypeOrder:
-                {
-                    chatMessage.msgType = FDChatMsgTypeOrder;
-                }
-                break;
-                default:
-                break;
-            }
-            chatMessage.msg = message;
-        }
-        break;
+        chatMessage.msgType = msgType;
+        chatMessage.msg = message;
+
+    }else if ([chatType isEqualToString:FDChatType_INVESTIGATION]) {
         // 评分
-        case FDMessageSendChatTypeComment:
-        {
-            chatMessage.chatType = FDChatType_INVESTIGATION;
-            if (message && msgType == FDMessageSendMsgTypeComment) {
-                chatMessage.score = message;
-                chatMessage.isScored = @"1";
-            }else{
-                chatMessage.isScored = @"0";
-            }
+        chatMessage.chatType = FDChatType_INVESTIGATION;
+        if (message && msgType == FDChatMsgTypeComment) {
+            chatMessage.score = message;
+            chatMessage.isScored = @"1";
+        }else{
+            chatMessage.isScored = @"0";
         }
-        break;
+    }else if ([chatType isEqualToString:FDChatType_ULN]) {
         // 断开连接
-        case FDMessageSendChatTypeULN:
-        {
-            chatMessage.chatType = FDChatType_ULN;
-        }
-        break;
+
+    }else if ([chatType isEqualToString:FDChatType_HEART]) {
         // 心跳
-        case FDMessageSendChatTypeHEART:
-        {
-            chatMessage.chatType = FDChatType_HEART;
-        }
-        break;
-        default:
-        break;
+
     }
     return chatMessage;
 }
-
-
-
 
 
 #pragma mark UUID

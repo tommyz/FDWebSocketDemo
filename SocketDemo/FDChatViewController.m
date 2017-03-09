@@ -127,8 +127,13 @@
 }
 
 - (void)closeSocket{
-    [FDWebSocket closeSocketCompletionBlock:^{
-        NSLog(@"断开成功");
+    [FDWebSocket sendMessage:[FDChatMessageBuilder buildDisconnectMessage] Success:^{
+        // 断开成功 退出该页面
+    } failure:^{
+        // 服务器断开失败  客户端主动断开
+        [FDWebSocket closeSocketCompletionBlock:^{
+            
+        }];
     }];
 }
 
