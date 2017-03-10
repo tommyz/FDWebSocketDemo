@@ -48,6 +48,14 @@
     return [self buildMessage:score msgType:FDChatMsgTypeComment chatType:FDChatType_INVESTIGATION];
 }
 
++ (FDChatMessage *)buildSystemMessage:(NSString *)message {
+    // 初始化时自动生成uuid、date
+    FDChatMessage *chatMessage = [[FDChatMessage alloc] init];
+    chatMessage.msg = message;
+    chatMessage.chatMessageBy = FDChatMessageBySystem;
+    return chatMessage;
+}
+
 
 #pragma mark Common
 + (FDChatMessage *)buildChatCommondType:(NSString *)commondType {
@@ -55,8 +63,8 @@
 }
 
 + (FDChatMessage *)buildMessage:(NSString *)message msgType:(NSString *)msgType chatType:(NSString *)chatType{
+    // 初始化时自动生成uuid、date
     FDChatMessage *chatMessage = [[FDChatMessage alloc] init];
-    
     chatMessage.visitor = [[FDChatMessageVisitor alloc] init];
 #warning user;
     chatMessage.visitor.name = @"xietao3";

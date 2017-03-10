@@ -17,7 +17,7 @@
     if (!message) return;
     FDChatMessage *chatMessage = [[FDChatMessage alloc] initWithString:message error:NULL];
     if (!chatMessage) return;
-    
+    // 是否为服务器应答
     if ([chatMessage.chatType isEqualToString:FDChatType_LINK] ||
         [chatMessage.chatType isEqualToString:FDChatType_FIRST_CHAT] ||
         [chatMessage.chatType isEqualToString:FDChatType_CHATING] ||
@@ -25,8 +25,8 @@
         [chatMessage.chatType isEqualToString:FDChatType_ULN] ||
         [chatMessage.chatType isEqualToString:FDChatType_HEART]
         ) {
+        // 是服务器应答 调发送成功回调
         chatMessage.isReply = YES;
-        // 是否为服务器应答 不是服务器应答则收到新消息
         if ([callBacks.allKeys containsObject:chatMessage.uuid]) {
             FDChatMessageManager *manager = callBacks[chatMessage.uuid];
             [manager setMessageSuccess];

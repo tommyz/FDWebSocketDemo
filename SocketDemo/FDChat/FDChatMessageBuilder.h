@@ -44,7 +44,7 @@
 /**
  文本消息
  
- @param message 消息
+ @param message 消息内容
  @return FDChatMessage
  */
 + (FDChatMessage *)buildTextMessage:(NSString *)message;
@@ -82,4 +82,11 @@
 + (FDChatMessage *)buildCommentWithScore:(NSString *)score;
 
 
+/**
+ 系统消息
+
+ @param message 消息内容
+ @return FDChatMessage
+ */
++ (FDChatMessage *)buildSystemMessage:(NSString *)message;
 @end

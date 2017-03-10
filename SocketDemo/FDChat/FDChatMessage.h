@@ -55,26 +55,18 @@ static NSString *const FDChatMsgTypeOrder       = @"order";     // 订单
 static NSString *const FDChatMsgTypeComment     = @"comment";   // 客服评分
 
 
-// 接收消息类型
-typedef NS_ENUM(NSUInteger, FDMessageReceiveChatType) {
-    FDMessageReceiveChatTypeComment_SERVICE = 0,
-    FDMessageReceiveChatTypeCHATTING_SERVICE,
-    FDMessageReceiveChatTypeSTOP_CHAT_SERVICE,
-    FDMessageReceiveChatTypeULN_SERVICE
-};
-
 /*----------- 消息来源 ----------------*/
 typedef NS_ENUM(NSInteger,FDChatMessageBy) {
-    FDChatMessageByServicer = 0,      //客服发的消息
-    FDChatMessageByCustomer,          //客户发的消息
-    FDChatMessageBySystem             //系统消息
+    FDChatMessageByServicer = 0,      // 客服发的消息
+    FDChatMessageByCustomer,          // 客户发的消息
+    FDChatMessageBySystem             // 系统消息
 };
 
 /*----------- 消息发送状态 ----------------*/
 typedef NS_ENUM(NSInteger,FDChatMessageState) {
-    FDChatMessageSendStateSending = 0,         //消息发送中
-    FDChatMessageSendStateSendSuccess,         //消息发送成功
-    FDChatMessageSendStateSendFailure          //系统发送失败
+    FDChatMessageSendStateSending = 0,         // 消息发送中
+    FDChatMessageSendStateSendSuccess,         // 消息发送成功
+    FDChatMessageSendStateSendFailure          // 消息发送失败
 };
 
 
