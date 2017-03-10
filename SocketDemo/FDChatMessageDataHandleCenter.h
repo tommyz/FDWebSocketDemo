@@ -1,5 +1,5 @@
 //
-//  FDChatMessageSqlite.h
+//  FDChatMessageDataHandleCenter.h
 //  SocketDemo
 //
 //  Created by xieyan on 2017/3/9.
@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 
 @class FDChatMessageFrame;
-@interface FDChatMessageSqlite : NSObject
+@interface FDChatMessageDataHandleCenter : NSObject
 
 + (NSArray *)getMessageFrames;
 

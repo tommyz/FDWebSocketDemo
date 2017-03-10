@@ -18,7 +18,7 @@
 #import "NSString+Helper.h"
 #import "MJRefresh.h"
 #import "FDWebSocket.h"
-#import "FDChatMessageSqlite.h"
+#import "FDChatMessageDataHandleCenter.h"
 
 @interface FDChatViewController ()<FDChatMoreViewDelegate,UITextViewDelegate>
 @property (weak, nonatomic) IBOutlet UITableView *chatTableView;
@@ -165,7 +165,7 @@
 - (NSMutableArray *)messageFrames{
     if (_messageFrames == nil) {
         _messageFrames = [NSMutableArray array];
-        NSArray *historyMessageFrames = [FDChatMessageSqlite getMessageFrames];
+        NSArray *historyMessageFrames = [FDChatMessageDataHandleCenter getMessageFrames];
         if (historyMessageFrames.count > 0) {
             [_messageFrames addObjectsFromArray:historyMessageFrames];
         }
@@ -288,7 +288,7 @@
     [FDWebSocket sendMessage:message Success:^{
         blockMessage.messageSendState = FDChatMessageSendStateSendSuccess;
         if (message == self.failMessageFrame.message) {//如果是重发消息,要更新此条在数据库的状态
-            [FDChatMessageSqlite updateMessageFrame:weakself.failMessageFrame];
+            [FDChatMessageDataHandleCenter updateMessageFrame:weakself.failMessageFrame];
         }
         [weakself.chatTableView reloadData];
         
@@ -317,13 +317,13 @@
         NSCalendarUnit unit = NSCalendarUnitYear | NSCalendarUnitMonth | NSCalendarUnitDay | NSCalendarUnitHour | NSCalendarUnitMinute | NSCalendarUnitSecond;
         
         // 计算两个日期之间的差值
-        NSDateComponents *cmps = [calendar components:unit fromDate:lastFm.message.timeDate toDate:message.timeDate options:0];
+        NSDateComponents *cmps = [calendar components:unit fromDate:lastFm.message.messageDate toDate:message.messageDate options:0];
         message.hideTime = cmps.minute < 30 ? YES : NO;
     }
     
     FDChatMessageFrame *fm = [[FDChatMessageFrame alloc]init];
     fm.message = message;
-    [FDChatMessageSqlite addMessageFrame:fm];
+    [FDChatMessageDataHandleCenter addMessageFrame:fm];
     [self.messageFrames addObject:fm];
     
 }

@@ -95,7 +95,7 @@
     FDChatMessage *message = messageFrame.message;
     
     //1.时间
-    self.timeLbl.text = [NSString stringFromDate:message.timeDate].formatTime;
+    self.timeLbl.text = [NSString stringFromDate:message.messageDate].formatTime;
     self.timeLbl.frame = messageFrame.timeF;
     
     //2.头像

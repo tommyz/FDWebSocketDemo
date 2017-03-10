@@ -11,7 +11,7 @@
 		101C39031E6FDFEF00688D8F /* FDChatViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 101C39011E6FDFEF00688D8F /* FDChatViewController.xib */; };
 		101C3C8D1E6FE18200688D8F /* EmotionIcons in Resources */ = {isa = PBXBuildFile; fileRef = 101C3C8C1E6FE18200688D8F /* EmotionIcons */; };
 		10690CAC1E713182005CFD56 /* NSDate+FDExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = 10690CAB1E713182005CFD56 /* NSDate+FDExtension.m */; };
-		10690CB21E714296005CFD56 /* FDChatMessageSqlite.m in Sources */ = {isa = PBXBuildFile; fileRef = 10690CB11E714296005CFD56 /* FDChatMessageSqlite.m */; };
+		10690CB21E714296005CFD56 /* FDChatMessageDataHandleCenter.m in Sources */ = {isa = PBXBuildFile; fileRef = 10690CB11E714296005CFD56 /* FDChatMessageDataHandleCenter.m */; };
 		10986F4E1E6D5C4300789DCE /* FDChatMessageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 10986F3A1E6D5C4300789DCE /* FDChatMessageCell.m */; };
 		10986F4F1E6D5C4300789DCE /* FDChatMessageCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 10986F3B1E6D5C4300789DCE /* FDChatMessageCell.xib */; };
 		10986F501E6D5C4300789DCE /* FDChatMessageFrame.m in Sources */ = {isa = PBXBuildFile; fileRef = 10986F3D1E6D5C4300789DCE /* FDChatMessageFrame.m */; };
@@ -46,8 +46,8 @@
 		101C3C8C1E6FE18200688D8F /* EmotionIcons */ = {isa = PBXFileReference; lastKnownFileType = folder; path = EmotionIcons; sourceTree = "<group>"; };
 		10690CAA1E713182005CFD56 /* NSDate+FDExtension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+FDExtension.h"; sourceTree = "<group>"; };
 		10690CAB1E713182005CFD56 /* NSDate+FDExtension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDate+FDExtension.m"; sourceTree = "<group>"; };
-		10690CB01E714296005CFD56 /* FDChatMessageSqlite.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FDChatMessageSqlite.h; sourceTree = "<group>"; };
-		10690CB11E714296005CFD56 /* FDChatMessageSqlite.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FDChatMessageSqlite.m; sourceTree = "<group>"; };
+		10690CB01E714296005CFD56 /* FDChatMessageDataHandleCenter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FDChatMessageDataHandleCenter.h; sourceTree = "<group>"; };
+		10690CB11E714296005CFD56 /* FDChatMessageDataHandleCenter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FDChatMessageDataHandleCenter.m; sourceTree = "<group>"; };
 		10986F391E6D5C4300789DCE /* FDChatMessageCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FDChatMessageCell.h; sourceTree = "<group>"; };
 		10986F3A1E6D5C4300789DCE /* FDChatMessageCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FDChatMessageCell.m; sourceTree = "<group>"; };
 		10986F3B1E6D5C4300789DCE /* FDChatMessageCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FDChatMessageCell.xib; sourceTree = "<group>"; };
@@ -201,8 +201,8 @@
 				10986F5D1E6D5CBA00789DCE /* NSString+Helper.m */,
 				10690CAA1E713182005CFD56 /* NSDate+FDExtension.h */,
 				10690CAB1E713182005CFD56 /* NSDate+FDExtension.m */,
-				10690CB01E714296005CFD56 /* FDChatMessageSqlite.h */,
-				10690CB11E714296005CFD56 /* FDChatMessageSqlite.m */,
+				10690CB01E714296005CFD56 /* FDChatMessageDataHandleCenter.h */,
+				10690CB11E714296005CFD56 /* FDChatMessageDataHandleCenter.m */,
 				93E42A521DCC778E0005ED14 /* Assets.xcassets */,
 				101C3C8C1E6FE18200688D8F /* EmotionIcons */,
 				93E42A541DCC778E0005ED14 /* LaunchScreen.storyboard */,
@@ -363,7 +363,7 @@
 				10986F5E1E6D5CBA00789DCE /* NSString+Helper.m in Sources */,
 				10986F581E6D5C4300789DCE /* FDInputTextView.m in Sources */,
 				10986F541E6D5C4300789DCE /* FDEmotion.m in Sources */,
-				10690CB21E714296005CFD56 /* FDChatMessageSqlite.m in Sources */,
+				10690CB21E714296005CFD56 /* FDChatMessageDataHandleCenter.m in Sources */,
 				101C39021E6FDFEF00688D8F /* FDChatViewController.m in Sources */,
 				93735E4A1E70FBC600981258 /* FDChatFileUploader.m in Sources */,
 				93E42A4B1DCC778E0005ED14 /* AppDelegate.m in Sources */,

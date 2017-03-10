@@ -23,7 +23,7 @@
     self = [super init];
     if (self) {
         _uuid = [self getUUID];
-        _timeDate = [self getTimeDate];
+        _messageDate = [self getmessageDate];
     }
     return self;
 }
@@ -37,7 +37,7 @@
     return [uuid lowercaseString];
 }
 
-- (NSDate *)getTimeDate {
+- (NSDate *)getmessageDate {
     return [NSDate date];
 }
 

@@ -1,19 +1,19 @@
 //
-//  FDChatMessageSqlite.m
+//  FDChatMessageDataHandleCenter.m
 //  SocketDemo
 //
 //  Created by xieyan on 2017/3/9.
 //  Copyright © 2017年 xieyan. All rights reserved.
 //
 
-#import "FDChatMessageSqlite.h"
+#import "FDChatMessageDataHandleCenter.h"
 #import "FMDB.h"
 #import "FDChatMessageFrame.h"
 #import "FDChatMessage.h"
 
 static FMDatabase *_db;
 
-@implementation FDChatMessageSqlite
+@implementation FDChatMessageDataHandleCenter
 
 + (void)initialize
 {
