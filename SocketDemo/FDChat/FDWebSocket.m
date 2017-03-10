@@ -22,6 +22,18 @@ typedef NS_ENUM(NSUInteger, FDWebSocketErrorCode) {
     Invalid_Server_Cert = 23556
 };
 
+typedef NS_ENUM(NSUInteger, FDChatDisconnectCode) {
+    // 用户主动关闭连接
+    FDChatDisconnectByuser       = 4601,
+    // 会话已过期
+    FDChatDisconnectByExpire     = 4602,
+    // 帐号在别的地方登录
+    FDChatDisconnectByreLogin    = 4603
+
+};
+
+
+
 @interface FDWebSocket ()<SRWebSocketDelegate>
 
 @property (strong, nonatomic) SRWebSocket *webSocket;
@@ -35,7 +47,7 @@ typedef NS_ENUM(NSUInteger, FDWebSocketErrorCode) {
 // 断开成功block
 @property (copy, nonatomic) DisconnectCompletion disconnectCompletionBlock;
 // 异常断开block
-@property (copy, nonatomic) DisconnectCompletion exceptionDisconnectBlock;
+@property (copy, nonatomic) ExceptionDisconnectBlock exceptionDisconnectBlock;
 // 接收消息block
 @property (copy, nonatomic) ReceiveMessageBlock receiveMessageBlock;
 
@@ -72,6 +84,17 @@ typedef NS_ENUM(NSUInteger, FDWebSocketErrorCode) {
     }
 }
 
++ (void)finishChat {
+    if (kWebSocket.webSocket.readyState < SR_CLOSING) {
+        [kWebSocket sendData:[[FDChatMessageBuilder buildDisconnectMessage] toJSONString]];
+    }
+    // 客户端主动断开
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [FDWebSocket closeSocketCompletionBlock:^{
+        }];
+    });
+}
+
 + (void)closeSocketCompletionBlock:(void(^)())completionBlock {
     if (kWebSocket.webSocket.readyState == SR_OPEN ||
         kWebSocket.webSocket.readyState == SR_CONNECTING) {
@@ -87,7 +110,7 @@ typedef NS_ENUM(NSUInteger, FDWebSocketErrorCode) {
     }
 }
 
-+ (void)setExceptionDisconnectBlock:(void(^)())exceptionDisconnectBlock {
++ (void)setExceptionDisconnectBlock:(ExceptionDisconnectBlock)exceptionDisconnectBlock {
     kWebSocket.exceptionDisconnectBlock = exceptionDisconnectBlock;
 }
 
@@ -151,7 +174,7 @@ typedef NS_ENUM(NSUInteger, FDWebSocketErrorCode) {
 #warning 登陆信息 connect_id
         NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:SocketUrl]];
         [request setValue:FDChatSource forHTTPHeaderField:@"chatSource"];
-        [request setValue:@"9b54db5ee1ac9e9cc2e321c7a6a54511" forHTTPHeaderField:@"connectId"];
+        [request setValue:@"292d4f83f7f5ab3edbf484eeb8ce5149" forHTTPHeaderField:@"connectId"];
         self.webSocket = [[SRWebSocket alloc] initWithURLRequest:request];
         self.webSocket.delegate = self;
         [self.webSocket open];
@@ -238,21 +261,35 @@ typedef NS_ENUM(NSUInteger, FDWebSocketErrorCode) {
 
 - (void)webSocket:(SRWebSocket *)webSocket didCloseWithCode:(NSInteger)code reason:(NSString *)reason wasClean:(BOOL)wasClean {
     NSLog(@"WebSocket closed");
-
-    // 主动断开
-    if (self.disconnectCompletionBlock) {
+    __weak __typeof__(self) weakSelf = self;
+    if (code == FDChatDisconnectByuser) {
+        // 用户断开
+        NSLog(@"用户结束会话");
+    }else if (code == FDChatDisconnectByExpire) {
+        // 用户超时未回复
+        if (weakSelf.exceptionDisconnectBlock) {
+            weakSelf.exceptionDisconnectBlock(reason);
+        }
+    }else if (code == FDChatDisconnectByreLogin) {
+        // 用户重复登录
+        if (weakSelf.exceptionDisconnectBlock) {
+            weakSelf.exceptionDisconnectBlock(reason);
+        }
+    }else if (self.disconnectCompletionBlock) {
+        // 主动断开
         self.disconnectCompletionBlock();
         [self cleanBlock];
-    // 被动断开
-    }else if (self.exceptionDisconnectBlock) {
+    }else {
+        // 被动断开 尝试重连
         [FDWebSocket openSocketSuccess:^{
             NSLog(@"重连成功");
         } failure:^{
             NSLog(@"重连失败");
+            if (weakSelf.exceptionDisconnectBlock) {
+                weakSelf.exceptionDisconnectBlock(ExceptionDisconnectAlertString);
+            }
         }];
-        self.exceptionDisconnectBlock();
     }
-    
 }
 
 - (void)webSocket:(SRWebSocket *)webSocket didReceivePong:(NSData *)pongPayload {

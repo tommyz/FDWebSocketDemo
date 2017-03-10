@@ -17,6 +17,7 @@
 typedef void(^ConnectSocketSuccess)();
 typedef void(^ConnectSocketFailure)();
 typedef void(^DisconnectCompletion)();
+typedef void(^ExceptionDisconnectBlock)(NSString *);
 typedef void(^WriteMessageSuccess)();
 typedef void(^WriteMessageFailure)();
 typedef void(^ReceiveMessageBlock)(FDChatMessage *message);
@@ -42,7 +43,12 @@ typedef void(^ReceiveMessageBlock)(FDChatMessage *message);
 
 
 /**
- 关闭会话
+ 结束会话
+ */
++ (void)finishChat;
+
+/**
+ 断开连接
 
  @param completionBlock completionBlock
  */
@@ -54,7 +60,7 @@ typedef void(^ReceiveMessageBlock)(FDChatMessage *message);
 
  @param exceptionDisconnectBlock exceptionDisconnectBlock
  */
-+ (void)setExceptionDisconnectBlock:(void(^)())exceptionDisconnectBlock;
++ (void)setExceptionDisconnectBlock:(ExceptionDisconnectBlock)exceptionDisconnectBlock;
 
 
 /**

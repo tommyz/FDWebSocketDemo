@@ -27,6 +27,8 @@ static float const imageCompressionQuality = 0.5;
 // 图片服务器URL
 static NSString *const uploadFileUrl = @"http://file-kf-upload.fruitday.com/iUploadFile";
 
+static NSString *const ExceptionDisconnectAlertString = @"异常断开";
+
 
 #endif /* FDChatConfig_h */
 

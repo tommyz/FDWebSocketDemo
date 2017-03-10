@@ -91,11 +91,19 @@
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(emotionDidSelect:) name:@"FDEmotionDidSelectNotification" object:nil];
     // 删除表情的通知
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(emotionDidDelete) name:@"FDEmotionDidDeleteNotification" object:nil];
+    
+    // 收到消息
     [FDWebSocket setReceiveMessageBlock:^(FDChatMessage *message) {
+#warning 判断信息类型 比如说评分 需要不同处理方式 不用加入聊天记录里
         message.chatMessageBy = FDChatMessageByServicer;
         [weakSelf addMessage:message];
         [weakSelf.chatTableView reloadData];
         [weakSelf  chatTableViewScrollToBottom];
+    }];
+    
+    // 异常断开
+    [FDWebSocket setExceptionDisconnectBlock:^(NSString *exceptionString){
+        NSLog(@"%@",exceptionString);
     }];
     
 #warning 
@@ -128,14 +136,9 @@
 }
 
 - (void)closeSocket{
-    [FDWebSocket sendMessage:[FDChatMessageBuilder buildDisconnectMessage] Success:^{
-        // 断开成功 退出该页面
-    } failure:^{
-        // 服务器断开失败  客户端主动断开
-        [FDWebSocket closeSocketCompletionBlock:^{
-            
-        }];
-    }];
+    // 告知服务器用户离开
+    [FDWebSocket finishChat];
+    // 断开后离开聊天页面
 }
 
 #pragma mark - 懒加载

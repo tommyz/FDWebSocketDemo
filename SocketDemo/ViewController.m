@@ -26,8 +26,8 @@
         NSLog(@"连接失败");
     }];
     
-    [FDWebSocket setExceptionDisconnectBlock:^{
-        NSLog(@"异常断开");
+    [FDWebSocket setExceptionDisconnectBlock:^(NSString *exceptionString){
+        NSLog(@"%@",exceptionString);
     }];
     
     [FDWebSocket setReceiveMessageBlock:^(FDChatMessage *message) {
