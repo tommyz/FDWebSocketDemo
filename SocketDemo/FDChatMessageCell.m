@@ -10,6 +10,7 @@
 #import "FDChatMessage.h"
 #import "FDChatMessageFrame.h"
 #import "NSString+Helper.h"
+#import "UIView+FDExtension.h"
 
 @interface FDChatMessageCell ()
 /**
@@ -92,9 +93,12 @@
     
         //6.系统消息提示
         UILabel *systemCueLabel = [[UILabel alloc]init];
-        systemCueLabel.textColor = [UIColor colorWithRed:191/255.0 green:191/255.0 blue:191/255.0 alpha:1.0];
+        systemCueLabel.textColor = [UIColor whiteColor];
         systemCueLabel.textAlignment = NSTextAlignmentCenter;
-        systemCueLabel.font = [UIFont systemFontOfSize:12.0];
+        systemCueLabel.font = [UIFont systemFontOfSize:14.0];
+        systemCueLabel.backgroundColor = [UIColor colorWithRed:213/255.0 green:213/255.0 blue:213/255.0 alpha:1.0];
+        systemCueLabel.layer.cornerRadius = 5.0f;
+        systemCueLabel.layer.masksToBounds = YES;
         [self.contentView addSubview:systemCueLabel];
         self.systemCueLabel = systemCueLabel;
     }

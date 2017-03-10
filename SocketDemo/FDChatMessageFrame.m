@@ -32,11 +32,12 @@
     }
     
     if (message.chatMessageBy == FDChatMessageBySystem) {
+        CGSize msgSize = [message.msg boundingRectWithSize:CGSizeMake(MAXFLOAT, 20) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:14]} context:nil].size;
         //系统提示
-        CGFloat systemCueLabelX = 0;
-        CGFloat systemCueLabelY = message.hideTime ? padding/2 : CGRectGetMaxY(_timeF) + padding/2;
-        CGFloat systemCueLabelW = screenW;
+        CGFloat systemCueLabelW = msgSize.width + 10;
         CGFloat systemCueLabelH = 20;
+        CGFloat systemCueLabelX = (screenW - systemCueLabelW)/2;
+        CGFloat systemCueLabelY = message.hideTime ? padding/2 : CGRectGetMaxY(_timeF) + padding/2;
         _systemCueLabelF = CGRectMake(systemCueLabelX, systemCueLabelY, systemCueLabelW, systemCueLabelH);
         _cellHeight = CGRectGetMaxY(_systemCueLabelF) +  padding;
     }else{

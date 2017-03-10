@@ -95,7 +95,9 @@
     //加载数据
     self.messageFrames = [self convertMessage:[FDChatMessageDataHandleCenter getMessages]];
     [self.chatTableView reloadData];
-    [self  chatTableViewScrollToBottom];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [self  chatTableViewScrollToBottom];
+    });
 
     [[FDChatMessageDataHandleCenter shareHandleCenter] setReloadDataBlock:^{
         self.messageFrames = [self convertMessage:[FDChatMessageDataHandleCenter getMessages]];
