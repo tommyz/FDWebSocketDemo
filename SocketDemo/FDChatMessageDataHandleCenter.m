@@ -130,12 +130,15 @@ static FMDatabase *_db;
 }
 
 - (void)uploadImage:(UIImage *)image {
+    __block FDChatMessage *imageMessage = [FDChatMessageBuilder buildImageMessage:@""];
     [FDChatFileUploader uploadImage:image progress:^(NSProgress * _Nonnull progress) {
         CGFloat complete = progress.completedUnitCount/progress.totalUnitCount;
         NSLog(@"----------%f",complete);
     } success:^(NSURLSessionDataTask *task, id responseData) {
         NSString *imageUrl = [[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding];
-        [self sendMessage:[FDChatMessageBuilder buildImageMessage:imageUrl]];
+        NSLog(@"----------finish:%@",[NSString stringWithFormat:@"https://file-kf-download.fruitday.com/%@",imageUrl]);
+        imageMessage.msg = [NSString stringWithFormat:@"https://file-kf-download.fruitday.com/%@",imageUrl];
+        [self sendMessage:imageMessage];
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
         NSLog(@"----------failure");
     }];

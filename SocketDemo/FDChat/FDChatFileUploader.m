@@ -18,7 +18,7 @@
             failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure {
     [self uploadFileData:UIImageJPEGRepresentation(image,imageCompressionQuality)
                     name:@"image"
-                fileName:@"imageName"
+                fileName:@"imageName.jpg"
                 fileType:FDChatFileTypeImage
                 progress:uploadProgress
                  success:success failure:failure];
@@ -33,7 +33,7 @@
                failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure {
     AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
     manager.responseSerializer = [AFHTTPResponseSerializer serializer];
-    manager.responseSerializer.acceptableContentTypes = [NSSet setWithObjects:@"application/json", @"text/html", nil];
+    manager.responseSerializer.acceptableContentTypes = [NSSet setWithObjects:@"application/json", @"text/html",@"text/plain", nil];
     // 检测网络
     if (![self beforeRequest:manager]) {
         if (failure) {
