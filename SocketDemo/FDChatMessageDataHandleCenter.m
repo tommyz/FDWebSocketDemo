@@ -11,6 +11,7 @@
 #import "FDChatMessageFrame.h"
 #import "FDChatMessage.h"
 #import "FDWebSocket.h"
+#import "FDChatFileUploader.h"
 
 static FMDatabase *_db;
 
@@ -126,6 +127,18 @@ static FMDatabase *_db;
     FDChatMessageFrame *fm = [[FDChatMessageFrame alloc]init];
     fm.message = message;
     return fm;
+}
+
+- (void)uploadImage:(UIImage *)image {
+    [FDChatFileUploader uploadImage:image progress:^(NSProgress * _Nonnull progress) {
+        CGFloat complete = progress.completedUnitCount/progress.totalUnitCount;
+        NSLog(@"----------%f",complete);
+    } success:^(NSURLSessionDataTask *task, id responseData) {
+        NSString *imageUrl = [[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding];
+        [self sendMessage:[FDChatMessageBuilder buildImageMessage:imageUrl]];
+    } failure:^(NSURLSessionDataTask *task, NSError *error) {
+        NSLog(@"----------failure");
+    }];
 }
 
 + (BOOL)isExistMessage:(NSString *)uuid;

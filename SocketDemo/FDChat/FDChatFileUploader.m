@@ -7,7 +7,6 @@
 //
 
 #import "FDChatFileUploader.h"
-#import <AFNetworking/AFNetworking.h>
 #import "FDChatConfig.h"
 
 @implementation FDChatFileUploader

@@ -308,6 +308,7 @@
         NSLog(@"拍照");
     }else if (type == FDChatMoreViewTypePhoto){
         NSLog(@"图片");
+        [[FDChatMessageDataHandleCenter shareInstance] uploadImage:[UIImage imageNamed:@"Jobs"]];
     }else{
         NSLog(@"我的订单号");
     }

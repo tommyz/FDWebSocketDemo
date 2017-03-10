@@ -8,8 +8,11 @@
 
 #import <Foundation/Foundation.h>
 
-@class FDChatMessageFrame,FDChatMessage;
+@class FDChatMessageFrame,FDChatMessage,UIImage;
 @interface FDChatMessageDataHandleCenter : NSObject
+
+// 用于刷新页面
+@property (copy ,nonatomic) void (^reloadDataBlock)();
 
 /*
  *  单例
@@ -51,10 +54,7 @@
  */
 - (void)sendMessage:(FDChatMessage *)message;
 
-/*
- *  用于刷新页面
- */
-@property (copy ,nonatomic) void (^reloadDataBlock)();
 
+- (void)uploadImage:(UIImage *)image;
 
 @end
