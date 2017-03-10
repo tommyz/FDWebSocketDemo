@@ -37,6 +37,11 @@
 @property (nonatomic,assign,readonly)CGRect redButtonF;
 
 /**
+ *  红色感叹号的frame
+ */
+@property (nonatomic,assign,readonly)CGRect systemCueLabelF;
+
+/**
  *   cell高度
  */
 @property (nonatomic,assign,readonly)CGFloat cellHeight;

@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-@class FDChatMessageFrame,FDChatMessage,UIImage;
+@class FDChatMessage,UIImage;
 @interface FDChatMessageDataHandleCenter : NSObject
 
 // 用于刷新页面
@@ -17,19 +17,19 @@
 /*
  *  单例
  */
-+ (instancetype)shareInstance;
++ (instancetype)shareHandleCenter;
 
 
 /*
  *  获取聊天历史记录
  */
-+ (NSArray *)getMessageFrames;
++ (NSArray *)getMessages;
 
 /*
  *  添加聊天记录
- *  messageFrame   要添加的聊天记录
+ *  message   要添加的聊天记录
  */
-+ (void)addMessageFrame:(FDChatMessageFrame *)messageFrame;
++ (void)addMessage:(FDChatMessage *)message;
 
 /*
  *  用于查询此消息是否存在

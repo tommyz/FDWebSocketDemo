@@ -38,13 +38,21 @@
 @property (nonatomic, weak) UIButton *redButton;
 
 
+/**
+ *  系统提示
+ */
+@property (nonatomic, weak) UILabel *systemCueLabel;
+
 @end
+
 @implementation FDChatMessageCell
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
 {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
+        self.backgroundColor = [UIColor clearColor];
+        
         //1.时间
         UILabel *timeLbl = [[UILabel alloc]init];
         timeLbl.textAlignment = NSTextAlignmentCenter;
@@ -81,8 +89,14 @@
         [redButton addTarget:self action:@selector(sendFailMessage) forControlEvents:UIControlEventTouchUpInside];
         [self.contentView addSubview:redButton];
         self.redButton = redButton;
-
-        self.backgroundColor = [UIColor clearColor];
+    
+        //6.系统消息提示
+        UILabel *systemCueLabel = [[UILabel alloc]init];
+        systemCueLabel.textColor = [UIColor colorWithRed:191/255.0 green:191/255.0 blue:191/255.0 alpha:1.0];
+        systemCueLabel.textAlignment = NSTextAlignmentCenter;
+        systemCueLabel.font = [UIFont systemFontOfSize:12.0];
+        [self.contentView addSubview:systemCueLabel];
+        self.systemCueLabel = systemCueLabel;
     }
     return self;
 }
@@ -98,45 +112,59 @@
     self.timeLbl.text = [NSString stringFromDate:message.messageDate].formatTime;
     self.timeLbl.frame = messageFrame.timeF;
     
-    //2.头像
-    if (message.chatMessageBy == FDChatMessageByCustomer) {
-        self.iconImg.image = [UIImage imageNamed:@"Gatsby"];
-        self.textBtn.contentEdgeInsets = UIEdgeInsetsMake(0, 5, 0, 10);
-    }else{
-        self.iconImg.image = [UIImage imageNamed:@"Jobs"];
-        self.textBtn.contentEdgeInsets = UIEdgeInsetsMake(0, 10, 0, 0);
-    }
-    self.iconImg.frame = messageFrame.iconF;
-    
-    //3.正文
-    [self.textBtn setTitle:message.msg forState:UIControlStateNormal];
-    self.textBtn.frame = messageFrame.textF;
-
-    //4.指示器和红色感叹号按钮
-    self.activityView.frame = messageFrame.activityViewF;
-    self.redButton.frame = messageFrame.redButtonF;
-    if (message.chatMessageBy == FDChatMessageByCustomer) {
-        [self.textBtn setBackgroundImage:[UIImage imageNamed:@"chat_left_bg"] forState:UIControlStateNormal];
-        if (message.messageSendState == FDChatMessageSendStateSending) {
-            [self.activityView startAnimating];
-            self.redButton.hidden = YES;
-        }else if (message.messageSendState == FDChatMessageSendStateSendSuccess) {
-            [self.activityView stopAnimating];
-            self.redButton.hidden = YES;
-        }else {
-            [self.activityView stopAnimating];
-            self.redButton.hidden = NO;
-        }
-    }else{
-        [self.textBtn setBackgroundImage:[UIImage imageNamed:@"chat_right_bg"] forState:UIControlStateNormal];
-        [self.activityView stopAnimating];
+    if (message.chatMessageBy == FDChatMessageBySystem) {
+        //2.系统提示
+        self.systemCueLabel.text = messageFrame.message.msg;
+        self.systemCueLabel.frame = messageFrame.systemCueLabelF;
+        self.systemCueLabel.hidden = NO;
+        self.iconImg.hidden = YES;
+        self.textBtn.hidden = YES;
+        self.activityView.hidden = YES;
         self.redButton.hidden = YES;
+    }else{
+        self.systemCueLabel.hidden = YES;
+        self.iconImg.hidden = NO;
+        self.textBtn.hidden = NO;
+        //3.头像
+        if (message.chatMessageBy == FDChatMessageByCustomer) {
+            self.iconImg.image = [UIImage imageNamed:@"Gatsby"];
+            self.textBtn.contentEdgeInsets = UIEdgeInsetsMake(0, 5, 0, 10);
+        }else{
+            self.iconImg.image = [UIImage imageNamed:@"Jobs"];
+            self.textBtn.contentEdgeInsets = UIEdgeInsetsMake(0, 10, 0, 0);
+        }
+        self.iconImg.frame = messageFrame.iconF;
+        
+        //4.正文
+        [self.textBtn setTitle:message.msg forState:UIControlStateNormal];
+        self.textBtn.frame = messageFrame.textF;
+        
+        //5.指示器和红色感叹号按钮
+        self.activityView.frame = messageFrame.activityViewF;
+        self.redButton.frame = messageFrame.redButtonF;
+        if (message.chatMessageBy == FDChatMessageByCustomer) {
+            [self.textBtn setBackgroundImage:[UIImage imageNamed:@"chat_left_bg"] forState:UIControlStateNormal];
+            if (message.messageSendState == FDChatMessageSendStateSending) {
+                [self.activityView startAnimating];
+                self.redButton.hidden = YES;
+            }else if (message.messageSendState == FDChatMessageSendStateSendSuccess) {
+                [self.activityView stopAnimating];
+                self.redButton.hidden = YES;
+            }else {
+                [self.activityView stopAnimating];
+                self.redButton.hidden = NO;
+            }
+        }else{
+            [self.textBtn setBackgroundImage:[UIImage imageNamed:@"chat_right_bg"] forState:UIControlStateNormal];
+            [self.activityView stopAnimating];
+            self.redButton.hidden = YES;
+        }
     }
 }
 
 - (void)sendFailMessage{
     if (self.sendFailMessageBlock) {
-        self.sendFailMessageBlock(self.messageFrame);
+        self.sendFailMessageBlock(self.messageFrame.message);
     }
 }
 

@@ -7,10 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
-@class FDChatMessageFrame;
+@class FDChatMessage,FDChatMessageFrame;
 @interface FDChatMessageCell : UITableViewCell
 
 @property(nonatomic, strong) FDChatMessageFrame *messageFrame;
-@property (copy ,nonatomic) void (^sendFailMessageBlock)(FDChatMessageFrame *);
+@property (copy ,nonatomic) void (^sendFailMessageBlock)(FDChatMessage *);
 
 @end

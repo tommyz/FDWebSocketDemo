@@ -71,6 +71,7 @@
     chatMessage.visitor.uid = @"xietao3";
     chatMessage.chatSource = FDChatSource;
     chatMessage.chatType = chatType;
+    chatMessage.chatMessageBy = FDChatMessageByCustomer;
     
     // 根据不同类型注入不同信息
     if ([chatType isEqualToString:FDChatType_LINK]) {
