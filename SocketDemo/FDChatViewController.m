@@ -25,7 +25,7 @@
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *inputViewHeightConstraint;
 @property (weak, nonatomic) IBOutlet FDInputTextView *inputTextView;
 @property (weak, nonatomic) IBOutlet UIButton *sendButton;
-//@property (nonatomic, strong)NSMutableArray *messageFrames;
+@property (nonatomic, strong)NSArray *messageFrames;
 /** 退出键盘手势 */
 @property (nonatomic, strong) UITapGestureRecognizer *hideKeyboardTap;
 /** 输入框激活系统键盘手势 */
@@ -43,7 +43,7 @@
 /** chatTableView的footer */
 @property (nonatomic, strong) MJRefreshBackFooter *mj_footer;
 /** 保存失败消息 */
-@property (nonatomic, strong) FDChatMessageFrame *failMessageFrame;
+@property (nonatomic, strong) FDChatMessage *failMessage;
 
 @end
 
@@ -92,7 +92,13 @@
     // 删除表情的通知
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(emotionDidDelete) name:@"FDEmotionDidDeleteNotification" object:nil];
  
-    [[FDChatMessageDataHandleCenter shareInstance] setReloadDataBlock:^{
+    //加载数据
+    self.messageFrames = [self convertMessage:[FDChatMessageDataHandleCenter getMessages]];
+    [self.chatTableView reloadData];
+    [self  chatTableViewScrollToBottom];
+
+    [[FDChatMessageDataHandleCenter shareHandleCenter] setReloadDataBlock:^{
+        self.messageFrames = [self convertMessage:[FDChatMessageDataHandleCenter getMessages]];
         [weakSelf.chatTableView reloadData];
         [weakSelf  chatTableViewScrollToBottom];
     }];
@@ -103,8 +109,8 @@
 }
 
 - (void)chatTableViewScrollToBottom{
-    if ([FDChatMessageDataHandleCenter getMessageFrames].count == 0) return;
-    NSIndexPath *path = [NSIndexPath indexPathForRow:[FDChatMessageDataHandleCenter getMessageFrames].count - 1 inSection:0];
+    if (self.messageFrames.count == 0) return;
+    NSIndexPath *path = [NSIndexPath indexPathForRow:self.messageFrames.count - 1 inSection:0];
     [self.chatTableView scrollToRowAtIndexPath:path atScrollPosition:UITableViewScrollPositionBottom animated:NO];
 }
 
@@ -119,14 +125,23 @@
 }
 
 - (void)openSocket{
-    [[FDChatMessageDataHandleCenter shareInstance]openSocket];
+    [[FDChatMessageDataHandleCenter shareHandleCenter]openSocket];
 }
 
 - (void)closeSocket{ 
     // 断开后离开聊天页面
-    [[FDChatMessageDataHandleCenter shareInstance]closeSocket];
+    [[FDChatMessageDataHandleCenter shareHandleCenter]closeSocket];
 }
 
+- (NSArray *)convertMessage:(NSArray *)messages{
+    NSMutableArray *messageFrames = [NSMutableArray array];
+    for (FDChatMessage *message in messages) {
+        FDChatMessageFrame *messageFrame = [[FDChatMessageFrame alloc]init];
+        messageFrame.message = message;
+        [messageFrames addObject:messageFrame];
+    }
+    return [NSArray arrayWithArray:messageFrames];
+}
 #pragma mark - 懒加载
 - (FDChatMoreView *)moreView{
     if (!_moreView) {
@@ -255,8 +270,6 @@
 
 #pragma mark - 发消息
 - (void)reloadUI{
-    [self.chatTableView reloadData];
-    
     // 自动滚到最后一条
     [self chatTableViewScrollToBottom];
     
@@ -274,9 +287,8 @@
 #pragma mark - IBAction
 - (IBAction)onSendMessagePress:(id)sender {
     FDChatMessage *message = [FDChatMessageBuilder buildTextMessage:self.inputTextView.text];
-    message.chatMessageBy = FDChatMessageByCustomer;
     message.messageSendState = FDChatMessageSendStateSending;
-    [[FDChatMessageDataHandleCenter shareInstance]sendMessage:message];
+    [[FDChatMessageDataHandleCenter shareHandleCenter]sendMessage:message];
     [self reloadUI];
 }
 
@@ -308,7 +320,7 @@
         NSLog(@"拍照");
     }else if (type == FDChatMoreViewTypePhoto){
         NSLog(@"图片");
-        [[FDChatMessageDataHandleCenter shareInstance] uploadImage:[UIImage imageNamed:@"Jobs"]];
+        [[FDChatMessageDataHandleCenter shareHandleCenter] uploadImage:[UIImage imageNamed:@"Jobs"]];
     }else{
         NSLog(@"我的订单号");
     }
@@ -324,7 +336,7 @@
         FDChatMessage *message = [FDChatMessageBuilder buildTextMessage:self.inputTextView.text];
         message.chatMessageBy = FDChatMessageByCustomer;
         message.messageSendState = FDChatMessageSendStateSending;
-        [[FDChatMessageDataHandleCenter shareInstance]sendMessage:message];
+        [[FDChatMessageDataHandleCenter shareHandleCenter]sendMessage:message];
         [self reloadUI];
         return  NO;
     }
@@ -333,7 +345,7 @@
 
 #pragma mark - UITableViewDatasource
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
-    return [FDChatMessageDataHandleCenter getMessageFrames].count;
+    return self.messageFrames.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
@@ -343,28 +355,27 @@
     if (cell == nil) {
         cell = [[FDChatMessageCell alloc]initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:ID];
     }
-    [cell setSendFailMessageBlock:^(FDChatMessageFrame *messageFrame) {
-        weakSelf.failMessageFrame = messageFrame;
+    [cell setSendFailMessageBlock:^(FDChatMessage *message) {
+        weakSelf.failMessage = message;
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:@"重发该消息？" delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"重发",nil];
         alert.tag = 1;
         [alert show];
     }];
-    cell.messageFrame = [FDChatMessageDataHandleCenter getMessageFrames][indexPath.row];
+    cell.messageFrame = self.messageFrames[indexPath.row];
     return cell;
 }
 
 #pragma mark - UITableViewDelegate
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
-    FDChatMessageFrame *mf = [FDChatMessageDataHandleCenter getMessageFrames][indexPath.row];
+    FDChatMessageFrame *mf = self.messageFrames[indexPath.row];
     return mf.cellHeight;
 }
 
 #pragma mark - alert delegate
-
 -(void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
     if(buttonIndex == 1 && alertView.tag == 1){
-        self.failMessageFrame.message.messageSendState = FDChatMessageSendStateSending;
-        [[FDChatMessageDataHandleCenter shareInstance]sendMessage:self.failMessageFrame.message];
+        self.failMessage.messageSendState = FDChatMessageSendStateSending;
+        [[FDChatMessageDataHandleCenter shareHandleCenter]sendMessage:self.failMessage];
     }
 }
 
