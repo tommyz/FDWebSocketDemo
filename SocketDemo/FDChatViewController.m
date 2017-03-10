@@ -17,15 +17,15 @@
 #import "FDEmotion.h"
 #import "NSString+Helper.h"
 #import "MJRefresh.h"
-#import "FDWebSocket.h"
 #import "FDChatMessageDataHandleCenter.h"
+#import "FDChatMessageBuilder.h"
 
 @interface FDChatViewController ()<FDChatMoreViewDelegate,UITextViewDelegate>
 @property (weak, nonatomic) IBOutlet UITableView *chatTableView;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *inputViewHeightConstraint;
 @property (weak, nonatomic) IBOutlet FDInputTextView *inputTextView;
 @property (weak, nonatomic) IBOutlet UIButton *sendButton;
-@property (nonatomic, strong)NSMutableArray *messageFrames;
+//@property (nonatomic, strong)NSMutableArray *messageFrames;
 /** 退出键盘手势 */
 @property (nonatomic, strong) UITapGestureRecognizer *hideKeyboardTap;
 /** 输入框激活系统键盘手势 */
@@ -91,29 +91,20 @@
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(emotionDidSelect:) name:@"FDEmotionDidSelectNotification" object:nil];
     // 删除表情的通知
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(emotionDidDelete) name:@"FDEmotionDidDeleteNotification" object:nil];
-    
-    // 收到消息
-    [FDWebSocket setReceiveMessageBlock:^(FDChatMessage *message) {
-#warning 判断信息类型 比如说评分 需要不同处理方式 不用加入聊天记录里
-        message.chatMessageBy = FDChatMessageByServicer;
-        [weakSelf addMessage:message];
+ 
+    [[FDChatMessageDataHandleCenter shareInstance] setReloadDataBlock:^{
         [weakSelf.chatTableView reloadData];
         [weakSelf  chatTableViewScrollToBottom];
     }];
-    
-    // 异常断开
-    [FDWebSocket setExceptionDisconnectBlock:^(NSString *exceptionString){
-        NSLog(@"%@",exceptionString);
-    }];
-    
-#warning 
+
+#warning
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]initWithTitle:@"连接" style:UIBarButtonItemStyleDone target:self action:@selector(openSocket)];
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc]initWithTitle:@"断开" style:UIBarButtonItemStyleDone target:self action:@selector(closeSocket)];
 }
 
 - (void)chatTableViewScrollToBottom{
-    if (self.messageFrames.count == 0) return;
-    NSIndexPath *path = [NSIndexPath indexPathForRow:self.messageFrames.count - 1 inSection:0];
+    if ([FDChatMessageDataHandleCenter getMessageFrames].count == 0) return;
+    NSIndexPath *path = [NSIndexPath indexPathForRow:[FDChatMessageDataHandleCenter getMessageFrames].count - 1 inSection:0];
     [self.chatTableView scrollToRowAtIndexPath:path atScrollPosition:UITableViewScrollPositionBottom animated:NO];
 }
 
@@ -128,17 +119,12 @@
 }
 
 - (void)openSocket{
-    [FDWebSocket openSocketSuccess:^{
-        NSLog(@"连接成功");
-    } failure:^{
-        NSLog(@"连接失败");
-    }];
+    [[FDChatMessageDataHandleCenter shareInstance]openSocket];
 }
 
-- (void)closeSocket{
-    // 告知服务器用户离开
-    [FDWebSocket finishChat];
+- (void)closeSocket{ 
     // 断开后离开聊天页面
+    [[FDChatMessageDataHandleCenter shareInstance]closeSocket];
 }
 
 #pragma mark - 懒加载
@@ -160,17 +146,6 @@
         self.emotionKeyboard.height = 216;
     }
     return _emotionKeyboard;
-}
-
-- (NSMutableArray *)messageFrames{
-    if (_messageFrames == nil) {
-        _messageFrames = [NSMutableArray array];
-        NSArray *historyMessageFrames = [FDChatMessageDataHandleCenter getMessageFrames];
-        if (historyMessageFrames.count > 0) {
-            [_messageFrames addObjectsFromArray:historyMessageFrames];
-        }
-    }
-    return _messageFrames;
 }
 
 #pragma mark - 通知处理
@@ -279,55 +254,6 @@
 }
 
 #pragma mark - 发消息
-- (void)sendMessage:(FDChatMessage *)message isReSend: (BOOL) isReSend{
-    
-    __block FDChatMessage* blockMessage = message;
-    __weak typeof(self) weakself = self;
-    
-    //1.把消息发送给服务器
-    [FDWebSocket sendMessage:message Success:^{
-        blockMessage.messageSendState = FDChatMessageSendStateSendSuccess;
-        if (message == self.failMessageFrame.message) {//如果是重发消息,要更新此条在数据库的状态
-            [FDChatMessageDataHandleCenter updateMessageFrame:weakself.failMessageFrame];
-        }
-        [weakself.chatTableView reloadData];
-        
-    } failure:^{
-        message.messageSendState = FDChatMessageSendStateSendFailure;
-        [weakself.chatTableView reloadData];
-    }];
-    
-    //2.组装模型数据并加入数组中
-    if (!isReSend) {//重发消息不要再加入数组
-        [self addMessage:message];
-    }
-    
-    //3. 刷新UI
-    [self reloadUI];
-}
-
-- (void)addMessage:(FDChatMessage *)message{
-    if (self.messageFrames.count > 0) {
-        FDChatMessageFrame *lastFm = [self.messageFrames lastObject];
-                
-        // 日历对象（方便比较两个日期之间的差距）
-        NSCalendar *calendar = [NSCalendar currentCalendar];
-        
-        // NSCalendarUnit枚举代表想获得哪些差值
-        NSCalendarUnit unit = NSCalendarUnitYear | NSCalendarUnitMonth | NSCalendarUnitDay | NSCalendarUnitHour | NSCalendarUnitMinute | NSCalendarUnitSecond;
-        
-        // 计算两个日期之间的差值
-        NSDateComponents *cmps = [calendar components:unit fromDate:lastFm.message.messageDate toDate:message.messageDate options:0];
-        message.hideTime = cmps.minute < 30 ? YES : NO;
-    }
-    
-    FDChatMessageFrame *fm = [[FDChatMessageFrame alloc]init];
-    fm.message = message;
-    [FDChatMessageDataHandleCenter addMessageFrame:fm];
-    [self.messageFrames addObject:fm];
-    
-}
-
 - (void)reloadUI{
     [self.chatTableView reloadData];
     
@@ -347,10 +273,11 @@
 
 #pragma mark - IBAction
 - (IBAction)onSendMessagePress:(id)sender {
-    FDChatMessage *message = [FDChatMessageBuilder buildTextMessage:self.  inputTextView.text];
+    FDChatMessage *message = [FDChatMessageBuilder buildTextMessage:self.inputTextView.text];
     message.chatMessageBy = FDChatMessageByCustomer;
     message.messageSendState = FDChatMessageSendStateSending;
-    [self sendMessage:message isReSend:NO];
+    [[FDChatMessageDataHandleCenter shareInstance]sendMessage:message];
+    [self reloadUI];
 }
 
 - (IBAction)onEmotionPress:(UIButton *)sender {
@@ -396,7 +323,8 @@
         FDChatMessage *message = [FDChatMessageBuilder buildTextMessage:self.inputTextView.text];
         message.chatMessageBy = FDChatMessageByCustomer;
         message.messageSendState = FDChatMessageSendStateSending;
-        [self sendMessage:message isReSend:NO];
+        [[FDChatMessageDataHandleCenter shareInstance]sendMessage:message];
+        [self reloadUI];
         return  NO;
     }
     return YES;
@@ -404,7 +332,7 @@
 
 #pragma mark - UITableViewDatasource
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
-    return self.messageFrames.count;
+    return [FDChatMessageDataHandleCenter getMessageFrames].count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
@@ -420,13 +348,13 @@
         alert.tag = 1;
         [alert show];
     }];
-    cell.messageFrame = self.messageFrames[indexPath.row];
+    cell.messageFrame = [FDChatMessageDataHandleCenter getMessageFrames][indexPath.row];
     return cell;
 }
 
 #pragma mark - UITableViewDelegate
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
-    FDChatMessageFrame *mf = self.messageFrames[indexPath.row];
+    FDChatMessageFrame *mf = [FDChatMessageDataHandleCenter getMessageFrames][indexPath.row];
     return mf.cellHeight;
 }
 
@@ -435,7 +363,7 @@
 -(void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
     if(buttonIndex == 1 && alertView.tag == 1){
         self.failMessageFrame.message.messageSendState = FDChatMessageSendStateSending;
-        [self sendMessage:self.failMessageFrame.message isReSend:YES];
+        [[FDChatMessageDataHandleCenter shareInstance]sendMessage:self.failMessageFrame.message];
     }
 }
 

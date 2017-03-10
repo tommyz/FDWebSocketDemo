@@ -10,13 +10,23 @@
 #import "FMDB.h"
 #import "FDChatMessageFrame.h"
 #import "FDChatMessage.h"
+#import "FDWebSocket.h"
 
 static FMDatabase *_db;
 
 @implementation FDChatMessageDataHandleCenter
 
-+ (void)initialize
-{
++ (instancetype)shareInstance{
+    static FDChatMessageDataHandleCenter *shareInstance = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        shareInstance = [[FDChatMessageDataHandleCenter alloc] init];
+    });
+    return shareInstance;
+}
+
+
++ (void)initialize{
     // 1.打开数据库
     NSString *path = [[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject] stringByAppendingPathComponent:@"chatMessages.sqlite"];
     _db = [FMDatabase databaseWithPath:path];
@@ -40,12 +50,89 @@ static FMDatabase *_db;
 
 + (void)addMessageFrame:(FDChatMessageFrame *)messageFrame{
     NSData *data = [NSKeyedArchiver archivedDataWithRootObject:messageFrame];
-    [_db executeUpdateWithFormat:@"INSERT INTO t_message(message, uuid) VALUES(%@, %@);", data,messageFrame.message.uuid];
+    if ([self isExistMessage:messageFrame.message.uuid]) { //如果此条之前存在,则更新
+        [_db executeUpdateWithFormat:@"UPDATE  t_message SET message = %@ where uuid = %@",data,messageFrame.message.uuid];
+    }else{//如果此条之前存在,则添加
+        [_db executeUpdateWithFormat:@"INSERT INTO t_message(message, uuid) VALUES(%@, %@);", data,messageFrame.message.uuid];
+    }
 }
 
-+ (void)updateMessageFrame:(FDChatMessageFrame *)messageFrame{
-    NSData *data = [NSKeyedArchiver archivedDataWithRootObject:messageFrame];
-    [_db executeUpdateWithFormat:@"UPDATE  t_message SET message = %@ where uuid = %@",data,messageFrame.message.uuid];
+- (void)openSocket {
+    [FDWebSocket openSocketSuccess:^{
+        NSLog(@"连接成功");
+        
+    } failure:^{
+        NSLog(@"连接失败");
+    }];
+    __weak typeof(self) weakself = self;
+    
+    //收到消息
+    [FDWebSocket setReceiveMessageBlock:^(FDChatMessage *message) {
+        message.chatMessageBy = FDChatMessageByServicer;
+        [FDChatMessageDataHandleCenter addMessageFrame:[self convertMessage:message]];
+        if (weakself.reloadDataBlock) {
+            weakself.reloadDataBlock();
+        }
+    }];
+    
+    // 异常断开
+    [FDWebSocket setExceptionDisconnectBlock:^(NSString *exceptionString){
+        NSLog(@"%@",exceptionString);
+    }];
+
+}
+
+- (void)closeSocket{
+    [FDWebSocket finishChat];
+}
+
+- (void)sendMessage:(FDChatMessage *)message {
+    __block FDChatMessage* blockMessage = message;
+    //1.把消息发送给服务器
+    [FDWebSocket sendMessage:message Success:^{
+        blockMessage.messageSendState = FDChatMessageSendStateSendSuccess;
+        [FDChatMessageDataHandleCenter addMessageFrame:[self convertMessage:blockMessage]];
+        // 发送成功 加进数组
+        if (self.reloadDataBlock) {
+            self.reloadDataBlock();
+        }
+        
+    } failure:^{
+        blockMessage.messageSendState = FDChatMessageSendStateSendFailure;
+        [FDChatMessageDataHandleCenter addMessageFrame:[self convertMessage:blockMessage]];
+        
+        if (self.reloadDataBlock) {
+            self.reloadDataBlock();
+        }
+    }];
+}
+
+- (FDChatMessageFrame *)convertMessage:(FDChatMessage *)message{
+    NSArray *originalMessageFrames = [FDChatMessageDataHandleCenter getMessageFrames];
+    if (originalMessageFrames.count > 0 && ![FDChatMessageDataHandleCenter isExistMessage:message.uuid]) {
+        FDChatMessageFrame *lastFm = [originalMessageFrames lastObject];
+        
+        // 日历对象（方便比较两个日期之间的差距）
+        NSCalendar *calendar = [NSCalendar currentCalendar];
+        
+        // NSCalendarUnit枚举代表想获得哪些差值
+        NSCalendarUnit unit = NSCalendarUnitYear | NSCalendarUnitMonth | NSCalendarUnitDay | NSCalendarUnitHour | NSCalendarUnitMinute | NSCalendarUnitSecond;
+        
+        // 计算两个日期之间的差值
+        NSDateComponents *cmps = [calendar components:unit fromDate:lastFm.message.messageDate toDate:message.messageDate options:0];
+        message.hideTime = cmps.minute < 30 ? YES : NO;
+    }
+    
+    FDChatMessageFrame *fm = [[FDChatMessageFrame alloc]init];
+    fm.message = message;
+    return fm;
+}
+
++ (BOOL)isExistMessage:(NSString *)uuid;
+{
+    FMResultSet *set = [_db executeQueryWithFormat:@"SELECT count(*) AS message_count FROM t_message WHERE uuid = %@;",uuid];
+    [set next];
+    return [set intForColumn:@"message_count"] == 1;
 }
 
 @end
