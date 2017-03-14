@@ -15,7 +15,7 @@
 @property (nonatomic, assign) BOOL isFinishChat;
 
 // 用于刷新页面
-@property (copy ,nonatomic) void (^reloadDataBlock)();
+@property (copy ,nonatomic) void (^reloadDataBlock)(BOOL);
 
 /*
  *  单例
@@ -55,6 +55,13 @@
  *  message   要发送的消息
  */
 - (void)sendMessage:(FDChatMessage *)message;
+
+/*
+ *  发送消息
+ *  message   要发送的消息
+ *  isReSend  是否重发
+ */
+- (void)sendMessage:(FDChatMessage *)message isReSend:(BOOL)isReSend;
 
 /*
  *  把图片存本地
