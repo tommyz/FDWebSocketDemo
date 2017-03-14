@@ -42,7 +42,6 @@
  */
 - (void)openSocket;
 
-
 /*
  *  关闭聊天socket
  */
@@ -54,7 +53,23 @@
  */
 - (void)sendMessage:(FDChatMessage *)message;
 
+/*
+ *  把图片存本地
+ *  image     要存的图片
+ *  imageName 图片名称(uuid)
+ */
++ (void)saveImageToSandBox:(UIImage *)image imageName:(NSString *)imageName;
 
+/*
+ *  从本地取图片
+ *  imageName 图片名称(uuid)
+ */
++ (UIImage *)getImageFromSandBox:(NSString *)imageName;
+
+/*
+ *  上传图片
+ *  image   要上传的图片
+ */
 - (void)uploadImage:(UIImage *)image;
 
 @end

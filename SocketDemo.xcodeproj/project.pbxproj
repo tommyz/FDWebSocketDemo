@@ -270,6 +270,7 @@
 				TargetAttributes = {
 					93E42A421DCC778E0005ED14 = {
 						CreatedOnToolsVersion = 8.0;
+						DevelopmentTeam = 2A6G8X87KS;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -504,6 +505,7 @@
 			baseConfigurationReference = 38A485F30D61691842406084 /* Pods-SocketDemo.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = 2A6G8X87KS;
 				INFOPLIST_FILE = SocketDemo/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -517,6 +519,7 @@
 			baseConfigurationReference = 24B266FF51E08609FEA3BBBA /* Pods-SocketDemo.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = 2A6G8X87KS;
 				INFOPLIST_FILE = SocketDemo/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";

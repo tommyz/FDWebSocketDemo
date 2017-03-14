@@ -42,6 +42,11 @@
 @property (nonatomic,assign,readonly)CGRect systemCueLabelF;
 
 /**
+ *  图片的frame
+ */
+@property (nonatomic,assign,readonly)CGRect imgViewF;
+
+/**
  *   cell高度
  */
 @property (nonatomic,assign,readonly)CGFloat cellHeight;

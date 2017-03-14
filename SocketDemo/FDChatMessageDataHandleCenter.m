@@ -14,6 +14,7 @@
 #import "FDChatMessageBuilder.h"
 
 static FMDatabase *_db;
+#define FDImagePath(imageName) [[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject] stringByAppendingPathComponent:[NSString stringWithFormat:@"%@", imageName]]
 
 @implementation FDChatMessageDataHandleCenter
 
@@ -66,6 +67,15 @@ static FMDatabase *_db;
     return [set intForColumn:@"message_count"] == 1;
 }
 
++ (void)saveImageToSandBox:(UIImage *)image imageName:(NSString *)imageName{//用uuid存
+    NSData *imageData = UIImageJPEGRepresentation(image,imageCompressionQuality);
+    [imageData writeToFile:FDImagePath(imageName) atomically:YES];
+}
+
++ (UIImage *)getImageFromSandBox:(NSString *)imageName{//用uuid取
+    return [UIImage imageWithContentsOfFile:FDImagePath(imageName)];
+}
+
 #pragma mark - public instance Method
 - (void)openSocket {
     
@@ -113,6 +123,26 @@ static FMDatabase *_db;
     }];
 }
 
+- (void)uploadImage:(UIImage *)image {
+    __block FDChatMessage *imageMessage = [FDChatMessageBuilder buildImageMessage:@""];
+    [FDChatMessageDataHandleCenter saveImageToSandBox:image imageName:imageMessage.uuid];
+    imageMessage.messageSendState = FDChatMessageSendStateSending;
+    [self reloadUIAndUpdateMessageData:imageMessage];
+    
+    [FDChatFileUploader uploadImage:image progress:^(NSProgress * _Nonnull progress) {
+        CGFloat complete = progress.completedUnitCount/progress.totalUnitCount;
+        NSLog(@"----------%f",complete);
+    } success:^(NSURLSessionDataTask *task, id responseData) {
+        NSString *imageUrl = [[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding];
+        NSLog(@"----------finish:%@",[NSString stringWithFormat:@"https://file-kf-download.fruitday.com/%@",imageUrl]);
+        imageMessage.msg = [NSString stringWithFormat:@"https://file-kf-download.fruitday.com/%@",imageUrl];
+        imageMessage.messageSendState = FDChatMessageSendStateSending;
+        [self sendMessage:imageMessage];
+    } failure:^(NSURLSessionDataTask *task, NSError *error) {
+        NSLog(@"----------failure");
+    }];
+}
+
 #pragma mark - private method
 - (FDChatMessage *)judgeMessageHideTime:(FDChatMessage *)message{
     NSArray *originalMessages = [FDChatMessageDataHandleCenter getMessages];
@@ -131,22 +161,6 @@ static FMDatabase *_db;
     }
     return message;
 }
-
-- (void)uploadImage:(UIImage *)image {
-    __block FDChatMessage *imageMessage = [FDChatMessageBuilder buildImageMessage:@""];
-    [FDChatFileUploader uploadImage:image progress:^(NSProgress * _Nonnull progress) {
-        CGFloat complete = progress.completedUnitCount/progress.totalUnitCount;
-        NSLog(@"----------%f",complete);
-    } success:^(NSURLSessionDataTask *task, id responseData) {
-        NSString *imageUrl = [[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding];
-        NSLog(@"----------finish:%@",[NSString stringWithFormat:@"https://file-kf-download.fruitday.com/%@",imageUrl]);
-        imageMessage.msg = [NSString stringWithFormat:@"https://file-kf-download.fruitday.com/%@",imageUrl];
-        [self sendMessage:imageMessage];
-    } failure:^(NSURLSessionDataTask *task, NSError *error) {
-        NSLog(@"----------failure");
-    }];
-}
-
 
 - (void)reloadUIAndUpdateMessageData:(FDChatMessage *)message{
     [FDChatMessageDataHandleCenter addMessage:[self judgeMessageHideTime:message]];

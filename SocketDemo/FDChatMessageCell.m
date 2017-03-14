@@ -11,6 +11,8 @@
 #import "FDChatMessageFrame.h"
 #import "NSString+Helper.h"
 #import "UIView+FDExtension.h"
+#import <SDWebImage/UIButton+WebCache.h>
+#import "FDChatMessageDataHandleCenter.h"
 
 @interface FDChatMessageCell ()
 /**
@@ -43,6 +45,12 @@
  *  系统提示
  */
 @property (nonatomic, weak) UILabel *systemCueLabel;
+
+/**
+ *  图片
+ */
+@property (nonatomic, weak) UIButton *imgView;
+
 
 @end
 
@@ -101,6 +109,13 @@
         systemCueLabel.layer.masksToBounds = YES;
         [self.contentView addSubview:systemCueLabel];
         self.systemCueLabel = systemCueLabel;
+        
+        //7.图片
+        UIButton *imgView = [[UIButton alloc]init];
+        [imgView addTarget:self action:@selector(showBigImage) forControlEvents:UIControlEventTouchUpInside];
+        imgView.adjustsImageWhenHighlighted = NO; //取消高亮图片变化效果
+        [self.contentView addSubview:imgView];
+        self.imgView = imgView;
     }
     return self;
 }
@@ -112,57 +127,102 @@
     //数据模型
     FDChatMessage *message = messageFrame.message;
     
-    //1.时间
-    self.timeLbl.text = [NSString stringFromDate:message.messageDate].formatTime;
-    self.timeLbl.frame = messageFrame.timeF;
+    //时间
+    if (message.hideTime) {
+        self.timeLbl.hidden = YES;
+    }else{
+        self.timeLbl.hidden = NO;
+        self.timeLbl.text = [NSString stringFromDate:message.messageDate].formatTime;
+        self.timeLbl.frame = messageFrame.timeF;
+    }
     
-    if (message.chatMessageBy == FDChatMessageBySystem) {
-        //2.系统提示
+    if (message.chatMessageBy == FDChatMessageByCustomer) {//客户发的消息
+        //头像
+        self.iconImg.hidden = NO;
+        self.iconImg.image = [UIImage imageNamed:@"Gatsby"];
+        self.iconImg.frame = messageFrame.iconF;
+
+        //指示器和红色感叹号按钮
+        self.activityView.frame = messageFrame.activityViewF;
+        self.redButton.frame = messageFrame.redButtonF;
+        
+        if (message.messageSendState == FDChatMessageSendStateSending) {
+            [self.activityView startAnimating];
+            self.redButton.hidden = YES;
+        }else if (message.messageSendState == FDChatMessageSendStateSendSuccess) {
+            [self.activityView stopAnimating];
+            self.redButton.hidden = YES;
+        }else {
+            [self.activityView stopAnimating];
+            self.redButton.hidden = NO;
+        }
+        
+        if ([message.msgType isEqualToString:FDChatMsgTypeText] || [message.msgType isEqualToString:FDChatMsgTypeOrder]) {
+            self.imgView.hidden = YES;
+            //正文
+            self.textBtn.hidden = NO;
+            self.textBtn.contentEdgeInsets = UIEdgeInsetsMake(0, 5, 0, 10);
+            [self.textBtn setBackgroundImage:[UIImage imageNamed:@"chat_left_bg"] forState:UIControlStateNormal];
+            NSString *text = [message.msgType isEqualToString:FDChatMsgTypeOrder] ? [NSString stringWithFormat:@"订单号：%@",message.msg] : message.msg;
+            [self.textBtn setTitle:text forState:UIControlStateNormal];
+            self.textBtn.frame = messageFrame.textF;
+        }else if ([message.msgType isEqualToString:FDChatMsgTypeImg]){
+            self.textBtn.hidden = YES;
+            //图片
+            self.imgView.hidden = NO;
+            self.imgView.contentEdgeInsets = UIEdgeInsetsMake(10, 10, 10, 18);
+            [self.imgView setBackgroundImage:[UIImage imageNamed:@"chat_left_bg"] forState:UIControlStateNormal];
+#warning placeholderImage后面补上
+            UIImage *image = [FDChatMessageDataHandleCenter getImageFromSandBox:message.uuid];
+            if (image) {
+                [self.imgView setImage:image forState:UIControlStateNormal];
+            }else{
+                NSString *urlStr = [message.msg stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];//过滤字符串中的特殊符号
+                [self.imgView sd_setImageWithURL:[NSURL URLWithString:urlStr] forState:UIControlStateNormal placeholderImage:nil];
+            }
+            self.imgView.frame = messageFrame.imgViewF;
+        }else if ([message.msgType isEqualToString:FDChatMsgTypeOrder]){
+        
+        }
+        self.systemCueLabel.hidden = YES;
+    }else if (message.chatMessageBy == FDChatMessageByServicer){//客服发的消息
+        //头像
+        self.iconImg.hidden = NO;
+        self.iconImg.image = [UIImage imageNamed:@"Jobs"];
+        self.iconImg.frame = messageFrame.iconF;
+
+        if ([message.msgType isEqualToString:FDChatMsgTypeText]) {
+            self.imgView.hidden = YES;
+            //正文
+            self.textBtn.hidden = NO;
+            self.textBtn.contentEdgeInsets = UIEdgeInsetsMake(0, 10, 0, 0);
+            [self.textBtn setBackgroundImage:[UIImage imageNamed:@"chat_right_bg"] forState:UIControlStateNormal];
+            [self.textBtn setTitle:message.msg forState:UIControlStateNormal];
+             self.textBtn.frame = messageFrame.textF;
+        }else if ([message.msgType isEqualToString:FDChatMsgTypeImg]){
+            self.textBtn.hidden = YES;
+            //图片
+            self.imgView.hidden = NO;
+            self.imgView.contentEdgeInsets = UIEdgeInsetsMake(10, 17, 10, 10);
+            [self.imgView setBackgroundImage:[UIImage imageNamed:@"chat_left_bg"] forState:UIControlStateNormal];
+            NSString *urlStr = [message.msg stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];//过滤字符串中的特殊符号
+#warning placeholderImage后面补上
+            [self.imgView sd_setImageWithURL:[NSURL URLWithString:urlStr] forState:UIControlStateNormal placeholderImage:nil];
+            self.imgView.frame = messageFrame.imgViewF;
+        }
+
+        [self.activityView stopAnimating];
+        self.redButton.hidden = YES;
+        self.systemCueLabel.hidden = YES;
+    }else{//系统消息
+        self.systemCueLabel.hidden = NO;
         self.systemCueLabel.text = messageFrame.message.msg;
         self.systemCueLabel.frame = messageFrame.systemCueLabelF;
-        self.systemCueLabel.hidden = NO;
-        self.iconImg.hidden = YES;
         self.textBtn.hidden = YES;
         self.activityView.hidden = YES;
         self.redButton.hidden = YES;
-    }else{
-        self.systemCueLabel.hidden = YES;
-        self.iconImg.hidden = NO;
-        self.textBtn.hidden = NO;
-        //3.头像
-        if (message.chatMessageBy == FDChatMessageByCustomer) {
-            self.iconImg.image = [UIImage imageNamed:@"Gatsby"];
-            self.textBtn.contentEdgeInsets = UIEdgeInsetsMake(0, 5, 0, 10);
-        }else{
-            self.iconImg.image = [UIImage imageNamed:@"Jobs"];
-            self.textBtn.contentEdgeInsets = UIEdgeInsetsMake(0, 10, 0, 0);
-        }
-        self.iconImg.frame = messageFrame.iconF;
-        
-        //4.正文
-        [self.textBtn setTitle:message.msg forState:UIControlStateNormal];
-        self.textBtn.frame = messageFrame.textF;
-        
-        //5.指示器和红色感叹号按钮
-        self.activityView.frame = messageFrame.activityViewF;
-        self.redButton.frame = messageFrame.redButtonF;
-        if (message.chatMessageBy == FDChatMessageByCustomer) {
-            [self.textBtn setBackgroundImage:[UIImage imageNamed:@"chat_left_bg"] forState:UIControlStateNormal];
-            if (message.messageSendState == FDChatMessageSendStateSending) {
-                [self.activityView startAnimating];
-                self.redButton.hidden = YES;
-            }else if (message.messageSendState == FDChatMessageSendStateSendSuccess) {
-                [self.activityView stopAnimating];
-                self.redButton.hidden = YES;
-            }else {
-                [self.activityView stopAnimating];
-                self.redButton.hidden = NO;
-            }
-        }else{
-            [self.textBtn setBackgroundImage:[UIImage imageNamed:@"chat_right_bg"] forState:UIControlStateNormal];
-            [self.activityView stopAnimating];
-            self.redButton.hidden = YES;
-        }
+        self.iconImg.hidden = YES;
+        self.imgView.hidden = YES;
     }
 }
 
@@ -170,6 +230,10 @@
     if (self.sendFailMessageBlock) {
         self.sendFailMessageBlock(self.messageFrame.message);
     }
+}
+
+- (void)showBigImage{
+    NSLog(@"放大图片");
 }
 
 @end
