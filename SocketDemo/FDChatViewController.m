@@ -100,12 +100,12 @@
         [self  chatTableViewScrollToBottom];
     });
 
-    [[FDChatMessageDataHandleCenter shareHandleCenter] setReloadDataBlock:^{
+    [[FDChatMessageDataHandleCenter shareHandleCenter] setReloadDataBlock:^(BOOL scrollToBottom) {
         self.messageFrames = [self convertMessage:[FDChatMessageDataHandleCenter getMessages]];
         [weakSelf.chatTableView reloadData];
+        if (!scrollToBottom) return ;
         [weakSelf  chatTableViewScrollToBottom];
     }];
-
 #warning
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]initWithTitle:@"连接" style:UIBarButtonItemStyleDone target:self action:@selector(openSocket)];
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc]initWithTitle:@"断开" style:UIBarButtonItemStyleDone target:self action:@selector(closeSocket)];
@@ -380,7 +380,7 @@
 -(void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
     if(buttonIndex == 1 && alertView.tag == 1){
         self.failMessage.messageSendState = FDChatMessageSendStateSending;
-        [[FDChatMessageDataHandleCenter shareHandleCenter]sendMessage:self.failMessage];
+        [[FDChatMessageDataHandleCenter shareHandleCenter]sendMessage:self.failMessage isReSend:YES];
     }
 }
 

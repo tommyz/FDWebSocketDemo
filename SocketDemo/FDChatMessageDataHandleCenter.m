@@ -98,22 +98,28 @@ static FMDatabase *_db;
     self.isFinishChat = NO;
     [FDWebSocket openSocketSuccess:^{
         FDChatMessage *message = [FDChatMessageBuilder buildSystemMessage:@"系统提示：访客建立会话成功"];
-        [weakself reloadUIAndUpdateMessageData:message];
+        [weakself reloadUIAndUpdateMessageData:message isScrollToBottom:YES];
     } failure:^{
         FDChatMessage *message = [FDChatMessageBuilder buildSystemMessage:@"系统提示：访客建立会话失败"];
-        [weakself reloadUIAndUpdateMessageData:message];
+        [weakself reloadUIAndUpdateMessageData:message isScrollToBottom:YES];
     }];
     
     //收到消息
     [FDWebSocket setReceiveMessageBlock:^(FDChatMessage *message) {
-        message.chatMessageBy = FDChatMessageByServicer;
-        [weakself reloadUIAndUpdateMessageData:message];
+        if ([message.chatType isEqualToString:FDChatType_CHATTING_SERVICE]) {
+            message.chatMessageBy = FDChatMessageByServicer;
+        }else if([message.chatType isEqualToString:FDChatType_INVESTIGATION_SERVICE]){
+            message.chatMessageBy = FDChatMessageBySystem;
+        }else{
+            message.chatMessageBy = FDChatMessageBySystem;
+        }
+        [weakself reloadUIAndUpdateMessageData:message isScrollToBottom:YES];
     }];
     
     // 异常断开
     [FDWebSocket setExceptionDisconnectBlock:^(NSString *exceptionString){
         FDChatMessage *message = [FDChatMessageBuilder buildSystemMessage:[NSString stringWithFormat:@"系统消息：%@",exceptionString]];
-        [weakself reloadUIAndUpdateMessageData:message];
+        [weakself reloadUIAndUpdateMessageData:message isScrollToBottom:YES];
     }];
 }
 
@@ -122,27 +128,32 @@ static FMDatabase *_db;
 }
 
 - (void)sendMessage:(FDChatMessage *)message {
-    
+    [self sendMessage:message isReSend:NO];
+ }
+
+- (void)sendMessage:(FDChatMessage *)message isReSend:(BOOL)isReSend{
     __weak typeof(self) weakself = self;
-
-    [weakself reloadUIAndUpdateMessageData:message];
     
-     __block FDChatMessage* blockMessage = message;
-
+    [self reloadUIAndUpdateMessageData:message isScrollToBottom:!isReSend];
+    
+    __block FDChatMessage* blockMessage = message;
+    
     [FDWebSocket sendMessage:message Success:^{
         blockMessage.messageSendState = FDChatMessageSendStateSendSuccess;
-        [weakself reloadUIAndUpdateMessageData:blockMessage];
+        [weakself reloadUIAndUpdateMessageData:message isScrollToBottom:!isReSend];
     } failure:^{
         blockMessage.messageSendState = FDChatMessageSendStateSendFailure;
-        [weakself reloadUIAndUpdateMessageData:blockMessage];
+        [weakself reloadUIAndUpdateMessageData:message isScrollToBottom:!isReSend];
     }];
+
+
 }
 
 - (void)uploadImage:(UIImage *)image {
     __block FDChatMessage *imageMessage = [FDChatMessageBuilder buildImageMessage:@""];
     [FDChatMessageDataHandleCenter saveImageToSandBox:image imageName:imageMessage.uuid];
     imageMessage.messageSendState = FDChatMessageSendStateSending;
-    [self reloadUIAndUpdateMessageData:imageMessage];
+    [self reloadUIAndUpdateMessageData:imageMessage isScrollToBottom:YES];
     
     [FDChatFileUploader uploadImage:image progress:^(NSProgress * _Nonnull progress) {
         CGFloat complete = progress.completedUnitCount/progress.totalUnitCount;
@@ -177,10 +188,16 @@ static FMDatabase *_db;
     return message;
 }
 
-- (void)reloadUIAndUpdateMessageData:(FDChatMessage *)message{
+- (void)reloadUIAndUpdateMessageData:(FDChatMessage *)message isScrollToBottom:(BOOL)isScrollToBottom{
     [FDChatMessageDataHandleCenter addMessage:[self judgeMessageHideTime:message]];
-    if (self.reloadDataBlock) {
-        self.reloadDataBlock();
+    if (isScrollToBottom) {
+        if (self.reloadDataBlock) {
+            self.reloadDataBlock(YES);
+        }
+    }else{
+        if (self.reloadDataBlock) {
+            self.reloadDataBlock(NO);
+        }
     }
 }
 
