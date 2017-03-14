@@ -12,9 +12,16 @@
 #import "FDWebSocket.h"
 #import "FDChatFileUploader.h"
 #import "FDChatMessageBuilder.h"
+#import "FDSocketMonitor.h"
 
 static FMDatabase *_db;
 #define FDImagePath(imageName) [[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject] stringByAppendingPathComponent:[NSString stringWithFormat:@"%@", imageName]]
+
+@interface FDChatMessageDataHandleCenter ()
+// 连接监视器
+@property (nonatomic, strong) FDSocketMonitor *socketMonitor;
+
+@end
 
 @implementation FDChatMessageDataHandleCenter
 
@@ -24,6 +31,14 @@ static FMDatabase *_db;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         shareInstance = [[FDChatMessageDataHandleCenter alloc] init];
+        shareInstance.isFinishChat = NO;
+        shareInstance.socketMonitor = [[FDSocketMonitor alloc] init];
+       
+        [shareInstance.socketMonitor setReconnectBlock:^{
+            if (!shareInstance.isFinishChat && ![FDWebSocket socketIsConnected]) {
+                [shareInstance openSocket];
+            }
+        }];
     });
     return shareInstance;
 }
@@ -80,7 +95,7 @@ static FMDatabase *_db;
 - (void)openSocket {
     
     __weak typeof(self) weakself = self;
-
+    self.isFinishChat = NO;
     [FDWebSocket openSocketSuccess:^{
         FDChatMessage *message = [FDChatMessageBuilder buildSystemMessage:@"系统提示：访客建立会话成功"];
         [weakself reloadUIAndUpdateMessageData:message];

@@ -29,6 +29,6 @@ static NSString *const uploadFileUrl = @"http://file-kf-upload.fruitday.com/iUpl
 
 static NSString *const ExceptionDisconnectAlertString = @"异常断开";
 
-
+static NSString *const imageUrlPrefix = @"https://file-kf-download.fruitday.com/";
 #endif /* FDChatConfig_h */
 

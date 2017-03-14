@@ -87,4 +87,11 @@ typedef void(^ReceiveMessageBlock)(FDChatMessage *message);
  @param uuid uuid description
  */
 + (void)removeMessageManagerWithUuid:(NSString *)uuid;
+
+/**
+ 是否连接Socket
+
+ @return bool
+ */
++ (BOOL)socketIsConnected;
 @end

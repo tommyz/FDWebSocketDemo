@@ -11,6 +11,9 @@
 @class FDChatMessage,UIImage;
 @interface FDChatMessageDataHandleCenter : NSObject
 
+// 是否结束聊天
+@property (nonatomic, assign) BOOL isFinishChat;
+
 // 用于刷新页面
 @property (copy ,nonatomic) void (^reloadDataBlock)();
 

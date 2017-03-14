@@ -12,6 +12,7 @@
 #import "FDChatMessage.h"
 #import "FDChatMessageParser.h"
 #import "FDChatConfig.h"
+#import "FDChatMessageDataHandleCenter.h"
 
 // error enum
 typedef NS_ENUM(NSUInteger, FDWebSocketErrorCode) {
@@ -38,6 +39,8 @@ typedef NS_ENUM(NSUInteger, FDChatDisconnectCode) {
 
 @property (strong, nonatomic) SRWebSocket *webSocket;
 
+
+// 回调集合
 @property (nonatomic, strong) NSMutableDictionary *callBacks;
 
 // 连接成功block
@@ -65,6 +68,7 @@ typedef NS_ENUM(NSUInteger, FDChatDisconnectCode) {
 }
 
 + (void)openSocketSuccess:(ConnectSocketSuccess)success failure:(ConnectSocketFailure)failure {
+
     if (kWebSocket.webSocket && kWebSocket.webSocket.readyState == SR_OPEN) {
         // 已连接 返回连接成功
         if (success) {
@@ -85,7 +89,9 @@ typedef NS_ENUM(NSUInteger, FDChatDisconnectCode) {
 }
 
 + (void)finishChat {
-    if (kWebSocket.webSocket.readyState < SR_CLOSING) {
+    // 结束聊天
+    [FDChatMessageDataHandleCenter shareHandleCenter].isFinishChat = YES;
+    if (kWebSocket.webSocket && kWebSocket.webSocket.readyState == SR_OPEN) {
         [kWebSocket sendData:[[FDChatMessageBuilder buildDisconnectMessage] toJSONString]];
     }
     // 客户端主动断开
@@ -117,7 +123,6 @@ typedef NS_ENUM(NSUInteger, FDChatDisconnectCode) {
 + (void)sendMessage:(id)message Success:(WriteMessageSuccess)success failure:(WriteMessageFailure)failure {
     NSAssert(message, @"入参不能为空");
     if (!message) return;
-//    NSLog(@"入参：%@",[message toJSONString]);
     
     if (kWebSocket.webSocket.readyState == SR_OPEN) {
         // 已连接
@@ -154,6 +159,10 @@ typedef NS_ENUM(NSUInteger, FDChatDisconnectCode) {
     [kWebSocket.callBacks removeObjectForKey:uuid];
 }
 
++ (BOOL)socketIsConnected {
+    return (kWebSocket.webSocket.readyState == SR_OPEN)?YES:NO;
+}
+
 #pragma mark - PrivateMethod
 - (id)init {
     self = [super init];
@@ -163,6 +172,10 @@ typedef NS_ENUM(NSUInteger, FDChatDisconnectCode) {
     return self;
 }
 
+
+/**
+ 建立长连接
+ */
 - (void)open {
     self.webSocket = nil;
 
@@ -181,24 +194,62 @@ typedef NS_ENUM(NSUInteger, FDChatDisconnectCode) {
     }
 }
 
+
+/**
+ 关闭长连接
+ */
 - (void)close {
     [self.webSocket close];
 
 }
 
+
+/**
+ 发送Ping
+
+ @param data data description
+ */
 - (void)sendPing:(NSData *)data {
     [self.webSocket sendPing:data];
 
 }
 
+
+/**
+ 发送信息
+
+ @param data data description
+ */
 - (void)sendData:(id)data {
     [self.webSocket send:data];
 }
 
+
+/**
+ 及时清除已失效Block
+ */
 - (void)cleanBlock {
     self.connectSocketSuccess = nil;
     self.connectSocketFailure = nil;
     self.disconnectCompletionBlock = nil;
+}
+
+
+/**
+ 尝试重连
+ */
+- (void)reconnectSocket {
+    __weak __typeof__(self) weakSelf = self;
+
+    // 被动断开 尝试重连
+    [FDWebSocket openSocketSuccess:^{
+        NSLog(@"重连成功");
+    } failure:^{
+        NSLog(@"重连失败");
+        if (weakSelf.exceptionDisconnectBlock) {
+            weakSelf.exceptionDisconnectBlock(ExceptionDisconnectAlertString);
+        }
+    }];
 }
 
 
@@ -218,6 +269,8 @@ typedef NS_ENUM(NSUInteger, FDChatDisconnectCode) {
     if (self.connectSocketFailure) {
         self.connectSocketFailure();
         [self cleanBlock];
+    }else if (self.webSocket.readyState == SR_CLOSED) {
+        [self reconnectSocket];
     }else if (self.callBacks.allValues.count == 1) {
         // 如果只有一个待处理CallBack 则调用该回调
         FDChatMessageManager *manager = self.callBacks.allValues[0];
@@ -267,13 +320,13 @@ typedef NS_ENUM(NSUInteger, FDChatDisconnectCode) {
         NSLog(@"用户结束会话");
     }else if (code == FDChatDisconnectByExpire) {
         // 用户超时未回复
-        if (weakSelf.exceptionDisconnectBlock) {
-            weakSelf.exceptionDisconnectBlock(reason);
+        if (self.exceptionDisconnectBlock) {
+            self.exceptionDisconnectBlock(reason);
         }
     }else if (code == FDChatDisconnectByreLogin) {
         // 用户重复登录
-        if (weakSelf.exceptionDisconnectBlock) {
-            weakSelf.exceptionDisconnectBlock(reason);
+        if (self.exceptionDisconnectBlock) {
+            self.exceptionDisconnectBlock(reason);
         }
     }else if (self.disconnectCompletionBlock) {
         // 主动断开
@@ -281,14 +334,7 @@ typedef NS_ENUM(NSUInteger, FDChatDisconnectCode) {
         [self cleanBlock];
     }else {
         // 被动断开 尝试重连
-        [FDWebSocket openSocketSuccess:^{
-            NSLog(@"重连成功");
-        } failure:^{
-            NSLog(@"重连失败");
-            if (weakSelf.exceptionDisconnectBlock) {
-                weakSelf.exceptionDisconnectBlock(ExceptionDisconnectAlertString);
-            }
-        }];
+        [self reconnectSocket];
     }
 }
 
