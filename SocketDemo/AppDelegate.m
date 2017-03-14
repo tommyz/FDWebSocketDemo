@@ -7,7 +7,7 @@
 //
 
 #import "AppDelegate.h"
-#import "FDChatViewController.h"
+#import "ViewController.h"
 @interface AppDelegate ()
 
 @end
@@ -17,7 +17,9 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     self.window=[[UIWindow alloc]initWithFrame:[UIScreen mainScreen].bounds];
-    UINavigationController *nav = [[UINavigationController alloc]initWithRootViewController:[[FDChatViewController alloc]init]];
+    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+    ViewController *goVC = [storyboard instantiateViewControllerWithIdentifier:@"ViewController"];
+    UINavigationController *nav = [[UINavigationController alloc]initWithRootViewController:goVC];
     self.window.rootViewController = nav;
     [self.window makeKeyAndVisible];
     // Override point for customization after application launch.

@@ -56,6 +56,7 @@
     [self setupDownRefresh];
     // 集成上拉刷新控件(弹出键盘)
     [self setupUpRefresh];
+    [self openSocket];
 }
 
 - (void)dealloc{
@@ -132,7 +133,8 @@
 
 - (void)closeSocket{ 
     // 断开后离开聊天页面
-    [[FDChatMessageDataHandleCenter shareHandleCenter]closeSocket];
+//    [[FDChatMessageDataHandleCenter shareHandleCenter]closeSocket];
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 - (NSArray *)convertMessage:(NSArray *)messages{
