@@ -73,6 +73,7 @@
         UIButton *btn = self.subviews[i + 1];
         btn.width = btnW;
         btn.height = btnH;
+        [btn.titleLabel setFont:[UIFont systemFontOfSize:30]];
         btn.x = inset + (i%HWEmotionMaxCols) * btnW;
         btn.y = inset + (i/HWEmotionMaxCols) * btnH;
     }
