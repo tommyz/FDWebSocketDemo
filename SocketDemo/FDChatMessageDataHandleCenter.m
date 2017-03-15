@@ -53,25 +53,26 @@ static FMDatabase *_db;
     [_db executeUpdate:@"CREATE TABLE IF NOT EXISTS t_message(id integer PRIMARY KEY, uuid text NOT NULL, message blob NOT NULL);"];
 }
 
-+ (NSArray *)getMessages{
-    // 得到结果集
-    FMResultSet *set = [_db executeQuery:@"SELECT * FROM t_message;"];
-    // 不断往下取数据
++ (NSArray *)getMessages:(int)page{
+    int size = 10;
+    int pos = (page - 1) * size;
+    FMResultSet *set = [_db executeQueryWithFormat:@"SELECT * FROM t_message ORDER BY id DESC LIMIT %d,%d;", pos, size];
     NSMutableArray *messages = [NSMutableArray array];
     while (set.next) {
-        // 获得当前所指向的数据
         FDChatMessage *message = [NSKeyedUnarchiver unarchiveObjectWithData:[set objectForColumnName:@"message"]];
         [messages addObject:message];
     }
     return messages;
 }
 
-+ (void)addMessage:(FDChatMessage *)message{
++ (BOOL)addMessage:(FDChatMessage *)message{
     NSData *data = [NSKeyedArchiver archivedDataWithRootObject:message];
     if ([self isExistMessage:message.uuid]) { //如果此条之前存在,则更新
         [_db executeUpdateWithFormat:@"UPDATE  t_message SET message = %@ where uuid = %@",data,message.uuid];
+        return NO;
     }else{//如果此条之前不存在,则添加
         [_db executeUpdateWithFormat:@"INSERT INTO t_message(message, uuid) VALUES(%@, %@);", data,message.uuid];
+        return YES;
     }
 }
 
@@ -98,10 +99,10 @@ static FMDatabase *_db;
     self.isFinishChat = NO;
     [FDWebSocket openSocketSuccess:^{
         FDChatMessage *message = [FDChatMessageBuilder buildSystemMessage:@"系统提示：访客建立会话成功"];
-        [weakself reloadUIAndUpdateMessageData:message isScrollToBottom:YES];
+        [weakself reloadUIAndUpdateMessageData:message];
     } failure:^{
         FDChatMessage *message = [FDChatMessageBuilder buildSystemMessage:@"系统提示：访客建立会话失败"];
-        [weakself reloadUIAndUpdateMessageData:message isScrollToBottom:YES];
+        [weakself reloadUIAndUpdateMessageData:message];
     }];
     
     //收到消息
@@ -113,13 +114,13 @@ static FMDatabase *_db;
         }else{
             message.chatMessageBy = FDChatMessageBySystem;
         }
-        [weakself reloadUIAndUpdateMessageData:message isScrollToBottom:YES];
+        [weakself reloadUIAndUpdateMessageData:message];
     }];
     
     // 异常断开
     [FDWebSocket setExceptionDisconnectBlock:^(NSString *exceptionString){
         FDChatMessage *message = [FDChatMessageBuilder buildSystemMessage:[NSString stringWithFormat:@"系统消息：%@",exceptionString]];
-        [weakself reloadUIAndUpdateMessageData:message isScrollToBottom:YES];
+        [weakself reloadUIAndUpdateMessageData:message];
     }];
 }
 
@@ -128,32 +129,27 @@ static FMDatabase *_db;
 }
 
 - (void)sendMessage:(FDChatMessage *)message {
-    [self sendMessage:message isReSend:NO];
- }
-
-- (void)sendMessage:(FDChatMessage *)message isReSend:(BOOL)isReSend{
     __weak typeof(self) weakself = self;
     
-    [self reloadUIAndUpdateMessageData:message isScrollToBottom:!isReSend];
+    [self reloadUIAndUpdateMessageData:message];
     
     __block FDChatMessage* blockMessage = message;
     
     [FDWebSocket sendMessage:message Success:^{
         blockMessage.messageSendState = FDChatMessageSendStateSendSuccess;
-        [weakself reloadUIAndUpdateMessageData:message isScrollToBottom:!isReSend];
+        [weakself reloadUIAndUpdateMessageData:message];
     } failure:^{
         blockMessage.messageSendState = FDChatMessageSendStateSendFailure;
-        [weakself reloadUIAndUpdateMessageData:message isScrollToBottom:!isReSend];
+        [weakself reloadUIAndUpdateMessageData:message];
     }];
-
-
 }
 
 - (void)uploadImage:(UIImage *)image {
     __block FDChatMessage *imageMessage = [FDChatMessageBuilder buildImageMessage:@""];
+    
     [FDChatMessageDataHandleCenter saveImageToSandBox:image imageName:imageMessage.uuid];
     imageMessage.messageSendState = FDChatMessageSendStateSending;
-    [self reloadUIAndUpdateMessageData:imageMessage isScrollToBottom:YES];
+    [self reloadUIAndUpdateMessageData:imageMessage];
     
     [FDChatFileUploader uploadImage:image progress:^(NSProgress * _Nonnull progress) {
         CGFloat complete = progress.completedUnitCount/progress.totalUnitCount;
@@ -169,9 +165,29 @@ static FMDatabase *_db;
     }];
 }
 
+- (NSMutableArray *)messages{
+    if (!_messages) {
+        _messages = [NSMutableArray array];
+    }
+    return _messages;
+}
+
 #pragma mark - private method
++ (NSArray *)getAllMessages{
+        // 得到结果集
+        FMResultSet *set = [_db executeQuery:@"SELECT * FROM t_message;"];
+        // 不断往下取数据
+        NSMutableArray *messages = [NSMutableArray array];
+        while (set.next) {
+            // 获得当前所指向的数据
+            FDChatMessage *message = [NSKeyedUnarchiver unarchiveObjectWithData:[set objectForColumnName:@"message"]];
+            [messages addObject:message];
+        }
+        return messages;
+}
+
 - (FDChatMessage *)judgeMessageHideTime:(FDChatMessage *)message{
-    NSArray *originalMessages = [FDChatMessageDataHandleCenter getMessages];
+    NSArray *originalMessages = [FDChatMessageDataHandleCenter getAllMessages];
     if (originalMessages.count > 0 && ![FDChatMessageDataHandleCenter isExistMessage:message.uuid]) {
         FDChatMessage *lastMessage = [originalMessages lastObject];
         
@@ -188,16 +204,16 @@ static FMDatabase *_db;
     return message;
 }
 
-- (void)reloadUIAndUpdateMessageData:(FDChatMessage *)message isScrollToBottom:(BOOL)isScrollToBottom{
-    [FDChatMessageDataHandleCenter addMessage:[self judgeMessageHideTime:message]];
-    if (isScrollToBottom) {
-        if (self.reloadDataBlock) {
-            self.reloadDataBlock(YES);
-        }
-    }else{
-        if (self.reloadDataBlock) {
-            self.reloadDataBlock(NO);
-        }
+- (void)reloadUIAndUpdateMessageData:(FDChatMessage *)message {
+    
+    FDChatMessage *addMessage = nil;
+    
+    if ([FDChatMessageDataHandleCenter addMessage:[self judgeMessageHideTime:message]]) {//新增消息
+        addMessage = message;
+    }
+    
+    if (self.reloadDataBlock) {
+        self.reloadDataBlock(addMessage);
     }
 }
 

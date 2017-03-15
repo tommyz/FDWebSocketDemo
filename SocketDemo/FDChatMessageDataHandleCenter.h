@@ -15,7 +15,10 @@
 @property (nonatomic, assign) BOOL isFinishChat;
 
 // 用于刷新页面
-@property (copy ,nonatomic) void (^reloadDataBlock)(BOOL);
+@property (copy ,nonatomic) void (^reloadDataBlock)(FDChatMessage *);
+
+/* 显示在界面的消息数据 */
+@property (nonatomic, strong) NSMutableArray *messages;
 
 /*
  *  单例
@@ -26,13 +29,14 @@
 /*
  *  获取聊天历史记录
  */
-+ (NSArray *)getMessages;
++ (NSArray *)getMessages:(int)page;
 
 /*
  *  添加聊天记录
  *  message   要添加的聊天记录
+ *  BOOL      是否是新增消息
  */
-+ (void)addMessage:(FDChatMessage *)message;
++ (BOOL)addMessage:(FDChatMessage *)message;
 
 /*
  *  用于查询此消息是否存在
@@ -55,13 +59,6 @@
  *  message   要发送的消息
  */
 - (void)sendMessage:(FDChatMessage *)message;
-
-/*
- *  发送消息
- *  message   要发送的消息
- *  isReSend  是否重发
- */
-- (void)sendMessage:(FDChatMessage *)message isReSend:(BOOL)isReSend;
 
 /*
  *  把图片存本地

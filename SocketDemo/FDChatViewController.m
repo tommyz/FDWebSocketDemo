@@ -25,7 +25,7 @@
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *inputViewHeightConstraint;
 @property (weak, nonatomic) IBOutlet FDInputTextView *inputTextView;
 @property (weak, nonatomic) IBOutlet UIButton *sendButton;
-@property (nonatomic, strong)NSArray *messageFrames;
+@property (nonatomic, strong)NSMutableArray *messageFrames;
 /** 退出键盘手势 */
 @property (nonatomic, strong) UITapGestureRecognizer *hideKeyboardTap;
 /** 输入框激活系统键盘手势 */
@@ -44,6 +44,8 @@
 @property (nonatomic, strong) MJRefreshBackFooter *mj_footer;
 /** 保存失败消息 */
 @property (nonatomic, strong) FDChatMessage *failMessage;
+/** 当前页 */
+@property (nonatomic, assign) int currentPage;
 
 @end
 
@@ -94,16 +96,18 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(emotionDidDelete) name:@"FDEmotionDidDeleteNotification" object:nil];
  
     //加载数据
-    self.messageFrames = [self convertMessage:[FDChatMessageDataHandleCenter getMessages]];
-    [self.chatTableView reloadData];
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+    self.currentPage = 0;
+    [self loadMoreMessages];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         [self  chatTableViewScrollToBottom];
     });
 
-    [[FDChatMessageDataHandleCenter shareHandleCenter] setReloadDataBlock:^(BOOL scrollToBottom) {
-        self.messageFrames = [self convertMessage:[FDChatMessageDataHandleCenter getMessages]];
+    [[FDChatMessageDataHandleCenter shareHandleCenter] setReloadDataBlock:^(FDChatMessage *addMessage) {
+        if (addMessage) {//如果有新增消息
+            [weakSelf.messageFrames addObjectsFromArray:[self convertMessage:@[addMessage]]];
+        }
         [weakSelf.chatTableView reloadData];
-        if (!scrollToBottom) return ;
+        if (!addMessage) return ;
         [weakSelf  chatTableViewScrollToBottom];
     }];
 #warning
@@ -118,7 +122,13 @@
 }
 
 - (void)setupDownRefresh{
-
+    __weak typeof(self) weakSelf = self;
+    // 1.添加刷新控件
+    self.chatTableView.mj_header = [MJRefreshHeader headerWithRefreshingBlock:^{
+        [weakSelf loadMoreMessages];
+    }];
+    // 2.进入刷新状态
+    [self.chatTableView.mj_header beginRefreshing];
 }
 
 - (void)setupUpRefresh{
@@ -144,7 +154,22 @@
         messageFrame.message = message;
         [messageFrames addObject:messageFrame];
     }
-    return [NSArray arrayWithArray:messageFrames];
+    return messageFrames;
+}
+
+- (void)loadMoreMessages{
+    // 1.增加页码
+    self.currentPage++;
+    
+    // 2.增加新数据
+    NSArray *newMessages = [self convertMessage:[FDChatMessageDataHandleCenter getMessages:self.currentPage]];
+    [self.messageFrames insertObjects:newMessages atIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, newMessages.count)]];
+    
+    // 3.刷新表格
+    [self.chatTableView reloadData];
+    
+    // 4.结束刷新
+    [self.chatTableView.mj_header endRefreshing];
 }
 #pragma mark - 懒加载
 - (FDChatMoreView *)moreView{
@@ -167,6 +192,12 @@
     return _emotionKeyboard;
 }
 
+- (NSMutableArray *)messageFrames{
+    if (!_messageFrames) {
+        _messageFrames = [NSMutableArray array];
+    }
+    return _messageFrames;
+}
 #pragma mark - 通知处理
 - (void)keyboardDidChangeFrame:(NSNotification *)noti{
     // 如果正在切换键盘，就不要执行后面的代码
@@ -380,7 +411,7 @@
 -(void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
     if(buttonIndex == 1 && alertView.tag == 1){
         self.failMessage.messageSendState = FDChatMessageSendStateSending;
-        [[FDChatMessageDataHandleCenter shareHandleCenter]sendMessage:self.failMessage isReSend:YES];
+        [[FDChatMessageDataHandleCenter shareHandleCenter]sendMessage:self.failMessage];
     }
 }
 
