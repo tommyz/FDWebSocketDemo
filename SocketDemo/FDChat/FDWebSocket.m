@@ -314,7 +314,6 @@ typedef NS_ENUM(NSUInteger, FDChatDisconnectCode) {
 
 - (void)webSocket:(SRWebSocket *)webSocket didCloseWithCode:(NSInteger)code reason:(NSString *)reason wasClean:(BOOL)wasClean {
     NSLog(@"WebSocket closed");
-    __weak __typeof__(self) weakSelf = self;
     if (code == FDChatDisconnectByuser) {
         // 用户断开
         NSLog(@"用户结束会话");

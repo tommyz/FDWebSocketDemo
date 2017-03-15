@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "FDChatMessage.h"
 
-typedef void(^WriteMessageSuccess)();
+typedef void(^WriteMessageSuccess)(FDChatMessage *message);
 typedef void(^WriteMessageFailure)();
 
 @interface FDChatMessageManager : NSObject
@@ -17,7 +17,7 @@ typedef void(^WriteMessageFailure)();
 
 - (instancetype)initWithUUID:(NSString *)UUID writeMessageSuccess:(WriteMessageSuccess)success writeMessageFailure:(WriteMessageFailure)failure;
 
-- (void)setMessageSuccess;
+- (void)setMessageSuccess:(FDChatMessage *)message;
 
 - (void)setMessageFailure;
 

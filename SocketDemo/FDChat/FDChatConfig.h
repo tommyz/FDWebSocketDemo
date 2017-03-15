@@ -44,6 +44,6 @@ static NSString *const FDChatSystemConnectFailureAlertString = @"访客建立会
 
 static NSString *const ExceptionDisconnectAlertString = @"异常断开,请检查当前网络状况";
 
-
+static NSInteger const FDSocketSuccessCode = 200;
 #endif /* FDChatConfig_h */
 

@@ -29,7 +29,7 @@
         chatMessage.isReply = YES;
         if ([callBacks.allKeys containsObject:chatMessage.uuid]) {
             FDChatMessageManager *manager = callBacks[chatMessage.uuid];
-            [manager setMessageSuccess];
+            [manager setMessageSuccess:chatMessage];
         }else{
             NSLog(@"发送超时的消息又收到了");
         }

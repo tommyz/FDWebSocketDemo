@@ -98,10 +98,19 @@ static FMDatabase *_db;
     __weak typeof(self) weakself = self;
     self.isFinishChat = NO;
     [FDWebSocket openSocketSuccess:^{
-//        FDChatMessage *message = [FDChatMessageBuilder buildSystemMessage:@"系统提示：访客建立会话成功"];
-//        [weakself reloadUIAndUpdateMessageData:message];
-        [FDWebSocket sendMessage:[FDChatMessageBuilder buildConnectSocketMessage] Success:^{
-
+        // 尝试获取历史记录
+        [FDWebSocket sendMessage:[FDChatMessageBuilder buildConnectSocketMessage] Success:^(FDChatMessage *message){
+            // 操作历史记录
+            if (message.code == FDSocketSuccessCode) {
+                if (message.offline) {
+                    for (FDChatMessage *msg in message.offline) {
+                        // 转换日期
+                        msg.messageDate = [weakself transferToDateFromTimestamp:msg.timestamp];
+                        // 然后存起来
+                    }
+                }
+                NSLog(@"offline；%@",message.offline);
+            }
         } failure:^{
 
         }];
@@ -140,7 +149,7 @@ static FMDatabase *_db;
     
     __block FDChatMessage* blockMessage = message;
     
-    [FDWebSocket sendMessage:message Success:^{
+    [FDWebSocket sendMessage:message Success:^(FDChatMessage *msg){
         blockMessage.messageSendState = FDChatMessageSendStateSendSuccess;
         [weakself reloadUIAndUpdateMessageData:message];
     } failure:^{
@@ -220,6 +229,11 @@ static FMDatabase *_db;
     if (self.reloadDataBlock) {
         self.reloadDataBlock(addMessage);
     }
+}
+
+- (NSDate *)transferToDateFromTimestamp:(NSString *)timestamp {
+    NSDate *date = [NSDate dateWithTimeIntervalSince1970:[timestamp intValue]];
+    return date;
 }
 
 @end

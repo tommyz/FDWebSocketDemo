@@ -70,41 +70,65 @@ typedef NS_ENUM(NSInteger,FDChatMessageState) {
 };
 
 
+@protocol FDChatMessage <NSObject>
+@end
 
 @class FDChatMessageVisitor;
 @interface FDChatMessage : JSONModel
-// require
+#pragma mark require
+// 信息类型
 @property (strong, nonatomic) NSString *chatType;
+// 唯一标示符
 @property (strong, nonatomic) NSString *uuid;
 
-// send
+
+#pragma mark send
+// 用户信息
 @property (strong, nonatomic) FDChatMessageVisitor *visitor;
 
-// receive
-@property (strong, nonatomic) NSString *code;
-@property (strong, nonatomic) NSString *timestamp;
-@property (strong, nonatomic) NSString *errMsg;
 
-// optional
+#pragma mark receive
+//状态码
+@property (assign, nonatomic) NSInteger code;
+// 时间戳
+@property (strong, nonatomic) NSString *timestamp;
+// 错误消息
+@property (strong, nonatomic) NSString *errMsg;
+// 离线消息
+@property (nonatomic, strong) NSArray<FDChatMessage> *offline;
+
+#pragma mark optional
+// 消息类型
 @property (strong, nonatomic) NSString *msgType;
+// 消息内容
 @property (strong, nonatomic) NSString *msg;
+// 消息日期
 @property (nonatomic, strong) NSDate *messageDate;
 
 
-// 系统入参
+#pragma mark 系统入参
+// 平台 iOS
 @property (strong, nonatomic) NSString *chatSource;
+// 版本号
 @property (strong, nonatomic) NSString *version;
+// 设备ID
 @property (strong, nonatomic) NSString *deviceId;
+// 渠道 App Store
 @property (strong, nonatomic) NSString *channel;
+// 链接id
 @property (strong, nonatomic) NSString *connectId;
+// 经纬度
 @property (strong, nonatomic) NSString *lonlat;
+// 地址
 @property (strong, nonatomic) NSString *address;
+
+#pragma mark 评分
 // 评分
 @property (strong, nonatomic) NSString *score;
+// 用户是否已打分
 @property (strong, nonatomic) NSString *isScored;
 
-// 其他
-
+#pragma mark 其他 （本地使用）
 // 是否为应答的消息
 @property (assign, nonatomic) BOOL isReply;
 // 聊天页面是否需要显示消息时间
@@ -117,8 +141,9 @@ typedef NS_ENUM(NSInteger,FDChatMessageState) {
 @end
 
 @interface FDChatMessageVisitor : JSONModel 
-
+// 用户名
 @property (strong, nonatomic) NSString *name;
+// 用户ID
 @property (strong, nonatomic) NSString *uid;
 
 @end

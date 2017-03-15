@@ -18,7 +18,7 @@ typedef void(^ConnectSocketSuccess)();
 typedef void(^ConnectSocketFailure)();
 typedef void(^DisconnectCompletion)();
 typedef void(^ExceptionDisconnectBlock)(NSString *);
-typedef void(^WriteMessageSuccess)();
+typedef void(^WriteMessageSuccess)(FDChatMessage *message);
 typedef void(^WriteMessageFailure)();
 typedef void(^ReceiveMessageBlock)(FDChatMessage *message);
 

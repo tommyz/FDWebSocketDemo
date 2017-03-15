@@ -42,10 +42,10 @@
     [FDWebSocket removeMessageManagerWithUuid:_uuid];
 }
 
-- (void)setMessageSuccess {
+- (void)setMessageSuccess:(FDChatMessage *)message {
     [NSObject cancelPreviousPerformRequestsWithTarget:self];
     if (self.writeMessageSuccess) {
-        self.writeMessageSuccess();
+        self.writeMessageSuccess(message);
     }
     [FDWebSocket removeMessageManagerWithUuid:_uuid];
 
