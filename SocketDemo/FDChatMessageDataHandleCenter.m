@@ -98,10 +98,15 @@ static FMDatabase *_db;
     __weak typeof(self) weakself = self;
     self.isFinishChat = NO;
     [FDWebSocket openSocketSuccess:^{
-        FDChatMessage *message = [FDChatMessageBuilder buildSystemMessage:@"系统提示：访客建立会话成功"];
-        [weakself reloadUIAndUpdateMessageData:message];
+//        FDChatMessage *message = [FDChatMessageBuilder buildSystemMessage:@"系统提示：访客建立会话成功"];
+//        [weakself reloadUIAndUpdateMessageData:message];
+        [FDWebSocket sendMessage:[FDChatMessageBuilder buildConnectSocketMessage] Success:^{
+
+        } failure:^{
+
+        }];
     } failure:^{
-        FDChatMessage *message = [FDChatMessageBuilder buildSystemMessage:@"系统提示：访客建立会话失败"];
+        FDChatMessage *message = [FDChatMessageBuilder buildSystemMessage:[NSString stringWithFormat:@"%@%@",FDChatSystemAlertTitle,FDChatSystemConnectFailureAlertString]];
         [weakself reloadUIAndUpdateMessageData:message];
     }];
     
@@ -119,7 +124,7 @@ static FMDatabase *_db;
     
     // 异常断开
     [FDWebSocket setExceptionDisconnectBlock:^(NSString *exceptionString){
-        FDChatMessage *message = [FDChatMessageBuilder buildSystemMessage:[NSString stringWithFormat:@"系统消息：%@",exceptionString]];
+        FDChatMessage *message = [FDChatMessageBuilder buildSystemMessage:[NSString stringWithFormat:@"%@%@",FDChatSystemAlertTitle,exceptionString]];
         [weakself reloadUIAndUpdateMessageData:message];
     }];
 }

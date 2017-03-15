@@ -27,8 +27,17 @@ static float const imageCompressionQuality = 0.5;
 // 图片服务器URL
 static NSString *const uploadFileUrl = @"http://file-kf-upload.fruitday.com/iUploadFile";
 
-static NSString *const ExceptionDisconnectAlertString = @"异常断开";
-
+// 图片链接前缀
 static NSString *const imageUrlPrefix = @"https://file-kf-download.fruitday.com/";
+
+
+#pragma mark - 提示文案
+static NSString *const FDChatSystemAlertTitle = @"系统提示：";
+
+static NSString *const FDChatSystemConnectFailureAlertString = @"访客建立会话失败，请检查当前网络状况";
+
+static NSString *const ExceptionDisconnectAlertString = @"异常断开,请检查当前网络状况";
+
+
 #endif /* FDChatConfig_h */
 
