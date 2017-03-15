@@ -360,7 +360,7 @@
     }else if (type == FDChatMoreViewTypePhoto){
         NSLog(@"图片");
         [[FDChatMessageDataHandleCenter shareHandleCenter] uploadImage:[UIImage imageNamed:@"Gatsby"]];
-        [[FDChatMessageDataHandleCenter shareHandleCenter] uploadImage:[UIImage imageNamed:@"Jobs"]];
+        [[FDChatMessageDataHandleCenter shareHandleCenter] uploadImage:[UIImage imageNamed:@"message_send_fail"]];
     }else{
         NSLog(@"我的订单号");
     }

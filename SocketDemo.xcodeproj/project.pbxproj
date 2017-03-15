@@ -17,6 +17,7 @@
 		10986F511E6D5C4300789DCE /* FDChatMoreView.m in Sources */ = {isa = PBXBuildFile; fileRef = 10986F3F1E6D5C4300789DCE /* FDChatMoreView.m */; };
 		10986F521E6D5C4300789DCE /* FDChatMoreView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 10986F401E6D5C4300789DCE /* FDChatMoreView.xib */; };
 		10986F581E6D5C4300789DCE /* FDInputTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 10986F4C1E6D5C4300789DCE /* FDInputTextView.m */; };
+		10CF12A11E79416A006BFB60 /* UIImage+FDExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = 10CF12A01E79416A006BFB60 /* UIImage+FDExtension.m */; };
 		933179101E6D43470093E49C /* FDChatMessageBuilder.m in Sources */ = {isa = PBXBuildFile; fileRef = 9331790F1E6D43470093E49C /* FDChatMessageBuilder.m */; };
 		933179131E6D4BA80093E49C /* FDChatMessageParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 933179121E6D4BA80093E49C /* FDChatMessageParser.m */; };
 		93735E4A1E70FBC600981258 /* FDChatFileUploader.m in Sources */ = {isa = PBXBuildFile; fileRef = 93735E491E70FBC600981258 /* FDChatFileUploader.m */; };
@@ -57,6 +58,8 @@
 		10986F401E6D5C4300789DCE /* FDChatMoreView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FDChatMoreView.xib; sourceTree = "<group>"; };
 		10986F4B1E6D5C4300789DCE /* FDInputTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FDInputTextView.h; sourceTree = "<group>"; };
 		10986F4C1E6D5C4300789DCE /* FDInputTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FDInputTextView.m; sourceTree = "<group>"; };
+		10CF129F1E79416A006BFB60 /* UIImage+FDExtension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+FDExtension.h"; sourceTree = "<group>"; };
+		10CF12A01E79416A006BFB60 /* UIImage+FDExtension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+FDExtension.m"; sourceTree = "<group>"; };
 		24B266FF51E08609FEA3BBBA /* Pods-SocketDemo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SocketDemo.release.xcconfig"; path = "Pods/Target Support Files/Pods-SocketDemo/Pods-SocketDemo.release.xcconfig"; sourceTree = "<group>"; };
 		38A485F30D61691842406084 /* Pods-SocketDemo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SocketDemo.debug.xcconfig"; path = "Pods/Target Support Files/Pods-SocketDemo/Pods-SocketDemo.debug.xcconfig"; sourceTree = "<group>"; };
 		42A8E5BE3762167DCFAE13F5 /* libPods-SocketDemo.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-SocketDemo.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -139,6 +142,8 @@
 				937F1D251E7283110024FC1F /* NSString+Helper.m */,
 				937F1D261E7283110024FC1F /* UIView+FDExtension.h */,
 				937F1D271E7283110024FC1F /* UIView+FDExtension.m */,
+				10CF129F1E79416A006BFB60 /* UIImage+FDExtension.h */,
+				10CF12A01E79416A006BFB60 /* UIImage+FDExtension.m */,
 			);
 			path = category;
 			sourceTree = "<group>";
@@ -371,6 +376,7 @@
 				937F1D311E7283110024FC1F /* NSDate+FDExtension.m in Sources */,
 				93AA826A1E769CB9001F5431 /* FDSocketMonitor.m in Sources */,
 				10986F501E6D5C4300789DCE /* FDChatMessageFrame.m in Sources */,
+				10CF12A11E79416A006BFB60 /* UIImage+FDExtension.m in Sources */,
 				933179101E6D43470093E49C /* FDChatMessageBuilder.m in Sources */,
 				93E42A4E1DCC778E0005ED14 /* ViewController.m in Sources */,
 				937F1D351E7283110024FC1F /* FDEmotionKeyboard.m in Sources */,
