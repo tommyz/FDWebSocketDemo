@@ -168,7 +168,9 @@
     [self.messageFrames insertObjects:[[newMessages reverseObjectEnumerator] allObjects] atIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, newMessages.count)]];
     
     // 3.刷新表格
-    [self.chatTableView reloadData];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [self.chatTableView reloadData];
+    });
     
     // 4.结束刷新
     [self.chatTableView.mj_header endRefreshing];
