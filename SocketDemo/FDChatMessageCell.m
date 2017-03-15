@@ -113,6 +113,7 @@
         
         //7.图片
         UIButton *imgView = [[UIButton alloc]init];
+        imgView.imageView.contentMode = UIViewContentModeScaleAspectFill;
         [imgView addTarget:self action:@selector(showBigImage) forControlEvents:UIControlEventTouchUpInside];
         imgView.adjustsImageWhenHighlighted = NO; //取消高亮图片变化效果
         [self.contentView addSubview:imgView];
@@ -195,7 +196,10 @@
 #warning placeholderImage后面补上
         UIImage *image = [FDChatMessageDataHandleCenter getImageFromSandBox:message.uuid];
         if (image) {
-            [self.imgView setImage:[image scaleToSize:messageFrame.imgViewF.size] forState:UIControlStateNormal];
+            if (image.size.width < messageFrame.imgViewF.size.width || image.size.height < messageFrame.imgViewF.size.height) {
+                image = [image scaleToSize:messageFrame.imgViewF.size];
+            }
+            [self.imgView setImage:image forState:UIControlStateNormal];
         }else{
             NSString *urlStr = [message.msg stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];//过滤字符串中的特殊符号
             [self.imgView sd_setImageWithURL:[NSURL URLWithString:urlStr] forState:UIControlStateNormal placeholderImage:nil];
