@@ -24,11 +24,15 @@
 #pragma mark - PrivateMethod
 - (void)addNotification {
     __weak __typeof__(self) weakSelf = self;
-
+    __block BOOL isFirstOpen = YES;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(willResignActive) name:UIApplicationWillResignActiveNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didBecomeActive) name:UIApplicationDidBecomeActiveNotification object:nil];
     [[AFNetworkReachabilityManager sharedManager] startMonitoring];
     [[AFNetworkReachabilityManager sharedManager] setReachabilityStatusChangeBlock:^(AFNetworkReachabilityStatus status) {
+        if (isFirstOpen) {
+            isFirstOpen = NO;
+            return ;
+        }
         switch (status) {
             case AFNetworkReachabilityStatusUnknown:
             {
