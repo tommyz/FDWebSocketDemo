@@ -138,93 +138,117 @@
     }
     
     if (message.chatMessageBy == FDChatMessageByCustomer) {//客户发的消息
-        //头像
-        self.iconImg.frame = messageFrame.iconF;
-        self.iconImg.image = [UIImage imageNamed:@"Gatsby"];
-        self.iconImg.hidden = NO;
-
-        //指示器和红色感叹号按钮
-        self.activityView.frame = messageFrame.activityViewF;
-        self.redButton.frame = messageFrame.redButtonF;
         
-        if (message.messageSendState == FDChatMessageSendStateSending) {
-            [self.activityView startAnimating];
-            self.redButton.hidden = YES;
-        }else if (message.messageSendState == FDChatMessageSendStateSendSuccess) {
-            [self.activityView stopAnimating];
-            self.redButton.hidden = YES;
-        }else {
-            [self.activityView stopAnimating];
-            self.redButton.hidden = NO;
-        }
+        [self showCustomerMessage:messageFrame];
         
-        if ([message.msgType isEqualToString:FDChatMsgTypeText] || [message.msgType isEqualToString:FDChatMsgTypeOrder]) {
-            self.imgView.hidden = YES;
-            //正文
-            self.textBtn.frame = messageFrame.textF;
-            self.textBtn.contentEdgeInsets = UIEdgeInsetsMake(0, 5, 0, 10);
-            [self.textBtn setBackgroundImage:[UIImage imageNamed:@"chat_left_bg"] forState:UIControlStateNormal];
-            NSString *text = [message.msgType isEqualToString:FDChatMsgTypeOrder] ? [NSString stringWithFormat:@"订单号：%@",message.msg] : message.msg;
-            [self.textBtn setTitle:text forState:UIControlStateNormal];
-            self.textBtn.hidden = NO;
-        }else if ([message.msgType isEqualToString:FDChatMsgTypeImg]){
-            self.textBtn.hidden = YES;
-            //图片
-            self.imgView.frame = messageFrame.imgViewF;
-            self.imgView.contentEdgeInsets = UIEdgeInsetsMake(10, 10, 10, 18);
-            [self.imgView setBackgroundImage:[UIImage imageNamed:@"chat_left_bg"] forState:UIControlStateNormal];
-            self.imgView.hidden = NO;
-#warning placeholderImage后面补上
-            UIImage *image = [FDChatMessageDataHandleCenter getImageFromSandBox:message.uuid];
-            if (image) {
-                [self.imgView setImage:[image scaleToSize:messageFrame.imgViewF.size] forState:UIControlStateNormal];
-            }else{
-                NSString *urlStr = [message.msg stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];//过滤字符串中的特殊符号
-                [self.imgView sd_setImageWithURL:[NSURL URLWithString:urlStr] forState:UIControlStateNormal placeholderImage:nil];
-            }
-        }else if ([message.msgType isEqualToString:FDChatMsgTypeOrder]){
-        
-        }
-        self.systemCueLabel.hidden = YES;
     }else if (message.chatMessageBy == FDChatMessageByServicer){//客服发的消息
-        //头像
-        self.iconImg.frame = messageFrame.iconF;
-        self.iconImg.image = [UIImage imageNamed:@"Jobs"];
-        self.iconImg.hidden = NO;
+        
+        [self showServicerMessage:messageFrame];
+        
+    }else{//系统消息
+        
+        [self showSystemMessage:messageFrame];
+        
+    }
+}
 
-        if ([message.msgType isEqualToString:FDChatMsgTypeText]) {
-            self.imgView.hidden = YES;
-            //正文
-            self.textBtn.frame = messageFrame.textF;
-            self.textBtn.contentEdgeInsets = UIEdgeInsetsMake(0, 10, 0, 0);
-            [self.textBtn setBackgroundImage:[UIImage imageNamed:@"chat_right_bg"] forState:UIControlStateNormal];
-            [self.textBtn setTitle:message.msg forState:UIControlStateNormal];
-            self.textBtn.hidden = NO;
-        }else if ([message.msgType isEqualToString:FDChatMsgTypeImg]){
-            self.textBtn.hidden = YES;
-            //图片
-            self.imgView.frame = messageFrame.imgViewF;
-            self.imgView.contentEdgeInsets = UIEdgeInsetsMake(10, 17, 10, 10);
-            [self.imgView setBackgroundImage:[UIImage imageNamed:@"chat_left_bg"] forState:UIControlStateNormal];
-            NSString *urlStr = [message.msg stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];//过滤字符串中的特殊符号
-#warning placeholderImage后面补上
-            [self.imgView sd_setImageWithURL:[NSURL URLWithString:urlStr] forState:UIControlStateNormal placeholderImage:nil];
-            self.imgView.hidden = NO;
-        }
+- (void)showCustomerMessage:(FDChatMessageFrame *)messageFrame{
+    //数据模型
+    FDChatMessage *message = messageFrame.message;
 
+    //头像
+    self.iconImg.frame = messageFrame.iconF;
+    self.iconImg.image = [UIImage imageNamed:@"Gatsby"];
+    self.iconImg.hidden = NO;
+    
+    //指示器和红色感叹号按钮
+    self.activityView.frame = messageFrame.activityViewF;
+    self.redButton.frame = messageFrame.redButtonF;
+    
+    if (message.messageSendState == FDChatMessageSendStateSending) {
+        [self.activityView startAnimating];
+        self.redButton.hidden = YES;
+    }else if (message.messageSendState == FDChatMessageSendStateSendSuccess) {
         [self.activityView stopAnimating];
         self.redButton.hidden = YES;
-        self.systemCueLabel.hidden = YES;
-    }else{//系统消息
-        self.systemCueLabel.text = messageFrame.message.msg;
-        self.systemCueLabel.frame = messageFrame.systemCueLabelF;
-        self.systemCueLabel.hidden = NO;
-        self.textBtn.hidden = YES;
-        self.activityView.hidden = YES;
-        self.redButton.hidden = YES;
-        self.iconImg.hidden = YES;
-        self.imgView.hidden = YES;
+    }else {
+        [self.activityView stopAnimating];
+        self.redButton.hidden = NO;
     }
+    
+    if ([message.msgType isEqualToString:FDChatMsgTypeText] || [message.msgType isEqualToString:FDChatMsgTypeOrder]) {
+        self.imgView.hidden = YES;
+        //正文
+        self.textBtn.frame = messageFrame.textF;
+        self.textBtn.contentEdgeInsets = UIEdgeInsetsMake(0, 5, 0, 10);
+        [self.textBtn setBackgroundImage:[UIImage imageNamed:@"chat_left_bg"] forState:UIControlStateNormal];
+        NSString *text = [message.msgType isEqualToString:FDChatMsgTypeOrder] ? [NSString stringWithFormat:@"订单号：%@",message.msg] : message.msg;
+        [self.textBtn setTitle:text forState:UIControlStateNormal];
+        self.textBtn.hidden = NO;
+    }else if ([message.msgType isEqualToString:FDChatMsgTypeImg]){
+        self.textBtn.hidden = YES;
+        //图片
+        self.imgView.frame = messageFrame.imgViewF;
+        self.imgView.contentEdgeInsets = UIEdgeInsetsMake(10, 10, 10, 18);
+        [self.imgView setBackgroundImage:[UIImage imageNamed:@"chat_left_bg"] forState:UIControlStateNormal];
+        self.imgView.hidden = NO;
+#warning placeholderImage后面补上
+        UIImage *image = [FDChatMessageDataHandleCenter getImageFromSandBox:message.uuid];
+        if (image) {
+            [self.imgView setImage:[image scaleToSize:messageFrame.imgViewF.size] forState:UIControlStateNormal];
+        }else{
+            NSString *urlStr = [message.msg stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];//过滤字符串中的特殊符号
+            [self.imgView sd_setImageWithURL:[NSURL URLWithString:urlStr] forState:UIControlStateNormal placeholderImage:nil];
+        }
+    }else if ([message.msgType isEqualToString:FDChatMsgTypeOrder]){
+        
+    }
+    self.systemCueLabel.hidden = YES;
+}
+
+- (void)showServicerMessage:(FDChatMessageFrame *)messageFrame{
+    //数据模型
+    FDChatMessage *message = messageFrame.message;
+
+    //头像
+    self.iconImg.frame = messageFrame.iconF;
+    self.iconImg.image = [UIImage imageNamed:@"Jobs"];
+    self.iconImg.hidden = NO;
+    
+    if ([message.msgType isEqualToString:FDChatMsgTypeText]) {
+        self.imgView.hidden = YES;
+        //正文
+        self.textBtn.frame = messageFrame.textF;
+        self.textBtn.contentEdgeInsets = UIEdgeInsetsMake(0, 10, 0, 0);
+        [self.textBtn setBackgroundImage:[UIImage imageNamed:@"chat_right_bg"] forState:UIControlStateNormal];
+        [self.textBtn setTitle:message.msg forState:UIControlStateNormal];
+        self.textBtn.hidden = NO;
+    }else if ([message.msgType isEqualToString:FDChatMsgTypeImg]){
+        self.textBtn.hidden = YES;
+        //图片
+        self.imgView.frame = messageFrame.imgViewF;
+        self.imgView.contentEdgeInsets = UIEdgeInsetsMake(10, 17, 10, 10);
+        [self.imgView setBackgroundImage:[UIImage imageNamed:@"chat_left_bg"] forState:UIControlStateNormal];
+        NSString *urlStr = [message.msg stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];//过滤字符串中的特殊符号
+#warning placeholderImage后面补上
+        [self.imgView sd_setImageWithURL:[NSURL URLWithString:urlStr] forState:UIControlStateNormal placeholderImage:nil];
+        self.imgView.hidden = NO;
+    }
+    
+    [self.activityView stopAnimating];
+    self.redButton.hidden = YES;
+    self.systemCueLabel.hidden = YES;
+}
+
+- (void)showSystemMessage:(FDChatMessageFrame *)messageFrame{
+    self.systemCueLabel.text = messageFrame.message.msg;
+    self.systemCueLabel.frame = messageFrame.systemCueLabelF;
+    self.systemCueLabel.hidden = NO;
+    self.textBtn.hidden = YES;
+    self.activityView.hidden = YES;
+    self.redButton.hidden = YES;
+    self.iconImg.hidden = YES;
+    self.imgView.hidden = YES;
 }
 
 - (void)sendFailMessage{

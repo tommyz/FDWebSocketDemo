@@ -64,8 +64,8 @@
 - (void)dealloc{
     //移除通知
     [[NSNotificationCenter defaultCenter]removeObserver:self name:UIKeyboardWillChangeFrameNotification object:nil];
-    [[NSNotificationCenter defaultCenter]removeObserver:self name:@"FDEmotionDidSelectNotification" object:nil];
-    [[NSNotificationCenter defaultCenter]removeObserver:self name:@"FDEmotionDidDeleteNotification" object:nil];
+    [[NSNotificationCenter defaultCenter]removeObserver:self name:FDEmotionDidSelectNotification object:nil];
+    [[NSNotificationCenter defaultCenter]removeObserver:self name:FDEmotionDidDeleteNotification object:nil];
 }
 
 #pragma mark - privateMethod
@@ -91,9 +91,9 @@
     //监听键盘通知
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(keyboardDidChangeFrame:) name:UIKeyboardWillChangeFrameNotification object:nil];
     // 选择表情的通知
-    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(emotionDidSelect:) name:@"FDEmotionDidSelectNotification" object:nil];
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(emotionDidSelect:) name:FDEmotionDidSelectNotification object:nil];
     // 删除表情的通知
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(emotionDidDelete) name:@"FDEmotionDidDeleteNotification" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(emotionDidDelete) name:FDEmotionDidDeleteNotification object:nil];
  
     //加载数据
     self.currentPage = 0;
@@ -236,7 +236,7 @@
 }
 
 - (void)emotionDidSelect:(NSNotification *)noti{
-    FDEmotion *emotion = noti.userInfo[@"FDEmotionKey"];
+    FDEmotion *emotion = noti.userInfo[FDEmotionKey];
     [self.inputTextView insertText:emotion.code.emoji];
 }
 

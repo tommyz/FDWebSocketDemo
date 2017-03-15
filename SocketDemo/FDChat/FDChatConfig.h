@@ -27,6 +27,12 @@ static float const imageCompressionQuality = 0.5;
 // 图片服务器URL
 static NSString *const uploadFileUrl = @"http://file-kf-upload.fruitday.com/iUploadFile";
 
+//通知
+static NSString *const FDEmotionDidDeleteNotification = @"FDEmotionDidDeleteNotification";
+static NSString *const FDEmotionDidSelectNotification = @"FDEmotionDidSelectNotification";
+static NSString *const FDEmotionKey = @"FDEmotionKey";
+
+
 // 图片链接前缀
 static NSString *const imageUrlPrefix = @"https://file-kf-download.fruitday.com/";
 

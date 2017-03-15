@@ -10,6 +10,7 @@
 #import "UIView+FDExtension.h"
 #import "NSString+Helper.h"
 #import "FDEmotion.h"
+#import "FDChatConfig.h"
 
 @interface FDEmotionPageView ()
 /** 删除按钮 */
@@ -32,7 +33,7 @@
 }
 
 - (void)deleteEmotionClick{
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"FDEmotionDidDeleteNotification" object:nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName:FDEmotionDidDeleteNotification object:nil];
 }
 
 - (void)setEmotions:(NSArray *)emotions
@@ -56,8 +57,8 @@
 - (void)emotionButtonDidClick:(UIButton *)btn{
     // 发出通知
     NSMutableDictionary *userInfo = [NSMutableDictionary dictionary];
-    userInfo[@"FDEmotionKey"] = self.emotions[btn.tag];
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"FDEmotionDidSelectNotification" object:nil userInfo:userInfo];
+    userInfo[FDEmotionKey] = self.emotions[btn.tag];
+    [[NSNotificationCenter defaultCenter] postNotificationName:FDEmotionDidSelectNotification object:nil userInfo:userInfo];
 }
 
 - (void)layoutSubviews
@@ -86,7 +87,7 @@
 }
 
 - (void)dealloc{
-    [[NSNotificationCenter defaultCenter]removeObserver:self name:@"FDEmotionDidSelectNotification" object:nil];
-    [[NSNotificationCenter defaultCenter]removeObserver:self name:@"FDEmotionDidDeleteNotification" object:nil];
+    [[NSNotificationCenter defaultCenter]removeObserver:self name:FDEmotionDidSelectNotification object:nil];
+    [[NSNotificationCenter defaultCenter]removeObserver:self name:FDEmotionDidDeleteNotification object:nil];
 }
 @end

@@ -25,7 +25,7 @@
 + (UIImage *)resizeImageWithName:(NSString *)name;
 /**
  * 拉升图片
- * name 图片名字
+ * size 图片大小
  */
 -(UIImage*)scaleToSize:(CGSize)size;
 @end
