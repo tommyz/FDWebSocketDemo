@@ -19,6 +19,7 @@
 #import "MJRefresh.h"
 #import "FDChatMessageDataHandleCenter.h"
 #import "FDChatMessageBuilder.h"
+#import "FDWebSocket.h"
 
 @interface FDChatViewController ()<FDChatMoreViewDelegate,UITextViewDelegate>
 @property (weak, nonatomic) IBOutlet UITableView *chatTableView;
@@ -58,7 +59,9 @@
     [self setupDownRefresh];
     // 集成上拉刷新控件(弹出键盘)
     [self setupUpRefresh];
-    [self openSocket];
+    if (![FDWebSocket socketIsConnected]) {
+        [self openSocket];
+    }
 }
 
 - (void)dealloc{
