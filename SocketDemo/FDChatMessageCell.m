@@ -112,6 +112,7 @@
         
         //7.图片
         UIButton *imgView = [[UIButton alloc]init];
+        imgView.imageView.contentMode = UIViewContentModeScaleAspectFill;
         [imgView addTarget:self action:@selector(showBigImage) forControlEvents:UIControlEventTouchUpInside];
         imgView.adjustsImageWhenHighlighted = NO; //取消高亮图片变化效果
         [self.contentView addSubview:imgView];
