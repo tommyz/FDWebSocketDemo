@@ -59,9 +59,6 @@
     [self setupDownRefresh];
     // 集成上拉刷新控件(弹出键盘)
     [self setupUpRefresh];
-    if (![FDWebSocket socketIsConnected]) {
-        [self openSocket];
-    }
 }
 
 - (void)dealloc{
@@ -104,6 +101,10 @@
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         [self  chatTableViewScrollToBottom];
     });
+    
+    if (![FDWebSocket socketIsConnected]) {
+        [self openSocket];
+    }
 
     [[FDChatMessageDataHandleCenter shareHandleCenter] setReloadDataBlock:^(FDChatMessage *addMessage) {
         if (addMessage) {//如果有新增消息
@@ -131,7 +132,7 @@
         [weakSelf loadMoreMessages];
     }];
     // 2.进入刷新状态
-    [self.chatTableView.mj_header beginRefreshing];
+//    [self.chatTableView.mj_header beginRefreshing];
 }
 
 - (void)setupUpRefresh{
@@ -166,7 +167,7 @@
     
     // 2.增加新数据
     NSArray *newMessages = [self convertMessage:[FDChatMessageDataHandleCenter getMessages:self.currentPage]];
-    [self.messageFrames insertObjects:newMessages atIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, newMessages.count)]];
+    [self.messageFrames insertObjects:[[newMessages reverseObjectEnumerator] allObjects] atIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, newMessages.count)]];
     
     // 3.刷新表格
     [self.chatTableView reloadData];
