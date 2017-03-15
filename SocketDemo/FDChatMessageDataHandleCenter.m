@@ -56,7 +56,7 @@ static FMDatabase *_db;
 + (NSArray *)getMessages:(int)page{
     int size = 10;
     int pos = (page - 1) * size;
-    FMResultSet *set = [_db executeQueryWithFormat:@"SELECT * FROM t_message ORDER BY id DESC LIMIT %d,%d;", pos, size];
+    FMResultSet *set = [_db executeQueryWithFormat:@"SELECT * FROM (SELECT * FROM t_message ORDER BY id DESC LIMIT %d,%d) ORDER BY id ;", pos, size];
     NSMutableArray *messages = [NSMutableArray array];
     while (set.next) {
         FDChatMessage *message = [NSKeyedUnarchiver unarchiveObjectWithData:[set objectForColumnName:@"message"]];

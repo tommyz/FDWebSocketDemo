@@ -165,7 +165,7 @@
     
     // 2.增加新数据
     NSArray *newMessages = [self convertMessage:[FDChatMessageDataHandleCenter getMessages:self.currentPage]];
-    [self.messageFrames insertObjects:[[newMessages reverseObjectEnumerator] allObjects] atIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, newMessages.count)]];
+    [self.messageFrames insertObjects:newMessages atIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, newMessages.count)]];
     
     // 3.刷新表格
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
