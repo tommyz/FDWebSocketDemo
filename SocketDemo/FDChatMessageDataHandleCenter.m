@@ -170,8 +170,8 @@ static FMDatabase *_db;
         NSLog(@"----------%f",complete);
     } success:^(NSURLSessionDataTask *task, id responseData) {
         NSString *imageUrl = [[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding];
-        NSLog(@"----------finish:%@",[NSString stringWithFormat:@"https://file-kf-download.fruitday.com/%@",imageUrl]);
-        imageMessage.msg = [NSString stringWithFormat:@"https://file-kf-download.fruitday.com/%@",imageUrl];
+        NSLog(@"----------finish:%@",[NSString stringWithFormat:@"%@%@",imageUrlPrefix,imageUrl]);
+        imageMessage.msg = [NSString stringWithFormat:@"%@%@",imageUrlPrefix,imageUrl];
         imageMessage.messageSendState = FDChatMessageSendStateSending;
         [self sendMessage:imageMessage];
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
