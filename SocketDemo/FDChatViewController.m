@@ -98,12 +98,11 @@
     //加载数据
     self.currentPage = 0;
     [self loadMoreMessages];
-    [self  chatTableViewScrollToBottom];
-    
-    if (![FDWebSocket socketIsConnected]) {
-        [self openSocket];
-    }
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [self  chatTableViewScrollToBottom];
+    });
 
+    //数据变化刷新页面
     [[FDChatMessageDataHandleCenter shareHandleCenter] setReloadDataBlock:^(FDChatMessage *addMessage) {
         if (addMessage) {//如果有新增消息
             [weakSelf.messageFrames addObjectsFromArray:[self convertMessage:@[addMessage]]];
@@ -140,7 +139,7 @@
 }
 
 - (void)openSocket{
-    [[FDChatMessageDataHandleCenter shareHandleCenter]openSocket];
+    [[FDChatMessageDataHandleCenter shareHandleCenter]openSocket:nil];
 }
 
 - (void)closeSocket{ 

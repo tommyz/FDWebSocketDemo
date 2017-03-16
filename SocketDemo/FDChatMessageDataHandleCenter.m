@@ -36,7 +36,7 @@ static FMDatabase *_db;
        
         [shareInstance.socketMonitor setReconnectBlock:^{
             if (!shareInstance.isFinishChat && ![FDWebSocket socketIsConnected]) {
-                [shareInstance openSocket];
+                [shareInstance openSocket:nil];
             }
         }];
     });
@@ -93,30 +93,21 @@ static FMDatabase *_db;
 }
 
 #pragma mark - public instance Method
-- (void)openSocket {
+- (void)openSocket:(void(^)())complete {
     
     __weak typeof(self) weakself = self;
     self.isFinishChat = NO;
     [FDWebSocket openSocketSuccess:^{
-        // 尝试获取历史记录
-        [FDWebSocket sendMessage:[FDChatMessageBuilder buildConnectSocketMessage] Success:^(FDChatMessage *message){
-            // 操作历史记录
-            if (message.code == FDSocketSuccessCode) {
-                if (message.offline) {
-                    for (FDChatMessage *msg in message.offline) {
-                        // 转换日期
-                        msg.messageDate = [weakself transferToDateFromTimestamp:msg.timestamp];
-                        // 然后存起来
-                    }
-                }
-                NSLog(@"offline；%@",message.offline);
-            }
-        } failure:^{
-
-        }];
+        [weakself getOfflineMessages];
+        if (complete) {
+            complete();
+        }
     } failure:^{
         FDChatMessage *message = [FDChatMessageBuilder buildSystemMessage:[NSString stringWithFormat:@"%@%@",FDChatSystemAlertTitle,FDChatSystemConnectFailureAlertString]];
         [weakself reloadUIAndUpdateMessageData:message];
+        if (complete) {
+            complete();
+        }
     }];
     
     //收到消息
@@ -229,6 +220,27 @@ static FMDatabase *_db;
     if (self.reloadDataBlock) {
         self.reloadDataBlock(addMessage);
     }
+}
+
+- (void)getOfflineMessages {
+    // 尝试获取历史记录
+    [FDWebSocket sendMessage:[FDChatMessageBuilder buildConnectSocketMessage] Success:^(FDChatMessage *message){
+        // 操作历史记录
+        if (message.code == FDSocketSuccessCode) {
+            if (message.offline) {
+                for (FDChatMessage *msg in message.offline) {
+                    // 转换日期
+                    msg.messageDate = [self transferToDateFromTimestamp:msg.timestamp];
+                    // 然后存起来
+                    [FDChatMessageDataHandleCenter addMessage:msg];
+                }
+            }
+            NSLog(@"offline；%@",message.offline);
+        }
+        
+    } failure:^{
+        
+    }];
 }
 
 - (NSDate *)transferToDateFromTimestamp:(NSString *)timestamp {

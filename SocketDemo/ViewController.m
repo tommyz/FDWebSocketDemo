@@ -10,6 +10,7 @@
 #import "FDWebSocket.h"
 #import "FDChatMessage.h"
 #import "FDChatViewController.h"
+#import "FDChatMessageDataHandleCenter.h"
 
 
 @interface ViewController ()
@@ -50,8 +51,11 @@
 }
 
 - (IBAction)connectAction:(id)sender {
-    FDChatViewController *vc = [[FDChatViewController alloc] initWithNibName:@"FDChatViewController" bundle:nil];
-    [self.navigationController pushViewController:vc animated:YES];
+    __weak typeof(self) weakSelf = self;
+    [[FDChatMessageDataHandleCenter shareHandleCenter]openSocket:^{
+        FDChatViewController *vc = [[FDChatViewController alloc] initWithNibName:@"FDChatViewController" bundle:nil];
+        [weakSelf.navigationController pushViewController:vc animated:YES];
+    }];
 //    [FDWebSocket openSocketSuccess:^{
 //        NSLog(@"连接成功");
 //    } failure:^{

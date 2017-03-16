@@ -10,6 +10,10 @@
 		101C39021E6FDFEF00688D8F /* FDChatViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 101C39001E6FDFEF00688D8F /* FDChatViewController.m */; };
 		101C39031E6FDFEF00688D8F /* FDChatViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 101C39011E6FDFEF00688D8F /* FDChatViewController.xib */; };
 		101C3C8D1E6FE18200688D8F /* EmotionIcons in Resources */ = {isa = PBXBuildFile; fileRef = 101C3C8C1E6FE18200688D8F /* EmotionIcons */; };
+		10201B491E7A5BC800857597 /* FDChatMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 10201B421E7A5BC800857597 /* FDChatMessage.m */; };
+		10201B4A1E7A5BC800857597 /* FDChatMessageBuilder.m in Sources */ = {isa = PBXBuildFile; fileRef = 10201B441E7A5BC800857597 /* FDChatMessageBuilder.m */; };
+		10201B4B1E7A5BC800857597 /* FDChatMessageManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 10201B461E7A5BC800857597 /* FDChatMessageManager.m */; };
+		10201B4C1E7A5BC800857597 /* FDChatMessageParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 10201B481E7A5BC800857597 /* FDChatMessageParser.m */; };
 		10690CB21E714296005CFD56 /* FDChatMessageDataHandleCenter.m in Sources */ = {isa = PBXBuildFile; fileRef = 10690CB11E714296005CFD56 /* FDChatMessageDataHandleCenter.m */; };
 		10986F4E1E6D5C4300789DCE /* FDChatMessageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 10986F3A1E6D5C4300789DCE /* FDChatMessageCell.m */; };
 		10986F4F1E6D5C4300789DCE /* FDChatMessageCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 10986F3B1E6D5C4300789DCE /* FDChatMessageCell.xib */; };
@@ -28,7 +32,6 @@
 		937F1D371E7283110024FC1F /* FDEmotionPageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 937F1D301E7283110024FC1F /* FDEmotionPageView.m */; };
 		938B1C611E03987B0079F8CC /* FDWebSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 938B1C5E1E03987B0079F8CC /* FDWebSocket.m */; };
 		93AA826A1E769CB9001F5431 /* FDSocketMonitor.m in Sources */ = {isa = PBXBuildFile; fileRef = 93AA82691E769CB9001F5431 /* FDSocketMonitor.m */; };
-		93B70D861E7A36040013ED85 /* FDChatMessage in Resources */ = {isa = PBXBuildFile; fileRef = 93B70D851E7A36040013ED85 /* FDChatMessage */; };
 		93E42A481DCC778E0005ED14 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 93E42A471DCC778E0005ED14 /* main.m */; };
 		93E42A4B1DCC778E0005ED14 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 93E42A4A1DCC778E0005ED14 /* AppDelegate.m */; };
 		93E42A4E1DCC778E0005ED14 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 93E42A4D1DCC778E0005ED14 /* ViewController.m */; };
@@ -43,6 +46,14 @@
 		101C39001E6FDFEF00688D8F /* FDChatViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FDChatViewController.m; sourceTree = "<group>"; };
 		101C39011E6FDFEF00688D8F /* FDChatViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FDChatViewController.xib; sourceTree = "<group>"; };
 		101C3C8C1E6FE18200688D8F /* EmotionIcons */ = {isa = PBXFileReference; lastKnownFileType = folder; path = EmotionIcons; sourceTree = "<group>"; };
+		10201B411E7A5BC800857597 /* FDChatMessage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FDChatMessage.h; sourceTree = "<group>"; };
+		10201B421E7A5BC800857597 /* FDChatMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FDChatMessage.m; sourceTree = "<group>"; };
+		10201B431E7A5BC800857597 /* FDChatMessageBuilder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FDChatMessageBuilder.h; sourceTree = "<group>"; };
+		10201B441E7A5BC800857597 /* FDChatMessageBuilder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FDChatMessageBuilder.m; sourceTree = "<group>"; };
+		10201B451E7A5BC800857597 /* FDChatMessageManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FDChatMessageManager.h; sourceTree = "<group>"; };
+		10201B461E7A5BC800857597 /* FDChatMessageManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FDChatMessageManager.m; sourceTree = "<group>"; };
+		10201B471E7A5BC800857597 /* FDChatMessageParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FDChatMessageParser.h; sourceTree = "<group>"; };
+		10201B481E7A5BC800857597 /* FDChatMessageParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FDChatMessageParser.m; sourceTree = "<group>"; };
 		10690CB01E714296005CFD56 /* FDChatMessageDataHandleCenter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FDChatMessageDataHandleCenter.h; sourceTree = "<group>"; };
 		10690CB11E714296005CFD56 /* FDChatMessageDataHandleCenter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FDChatMessageDataHandleCenter.m; sourceTree = "<group>"; };
 		10986F391E6D5C4300789DCE /* FDChatMessageCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FDChatMessageCell.h; sourceTree = "<group>"; };
@@ -81,7 +92,6 @@
 		938B1C5E1E03987B0079F8CC /* FDWebSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FDWebSocket.m; sourceTree = "<group>"; };
 		93AA82681E769CB9001F5431 /* FDSocketMonitor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FDSocketMonitor.h; sourceTree = "<group>"; };
 		93AA82691E769CB9001F5431 /* FDSocketMonitor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FDSocketMonitor.m; sourceTree = "<group>"; };
-		93B70D851E7A36040013ED85 /* FDChatMessage */ = {isa = PBXFileReference; lastKnownFileType = folder; path = FDChatMessage; sourceTree = "<group>"; };
 		93E42A431DCC778E0005ED14 /* SocketDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SocketDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		93E42A471DCC778E0005ED14 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		93E42A491DCC778E0005ED14 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -106,6 +116,21 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		10201B401E7A5BC800857597 /* FDChatMessage */ = {
+			isa = PBXGroup;
+			children = (
+				10201B411E7A5BC800857597 /* FDChatMessage.h */,
+				10201B421E7A5BC800857597 /* FDChatMessage.m */,
+				10201B431E7A5BC800857597 /* FDChatMessageBuilder.h */,
+				10201B441E7A5BC800857597 /* FDChatMessageBuilder.m */,
+				10201B451E7A5BC800857597 /* FDChatMessageManager.h */,
+				10201B461E7A5BC800857597 /* FDChatMessageManager.m */,
+				10201B471E7A5BC800857597 /* FDChatMessageParser.h */,
+				10201B481E7A5BC800857597 /* FDChatMessageParser.m */,
+			);
+			path = FDChatMessage;
+			sourceTree = "<group>";
+		};
 		723A99C7C59023434C8455D6 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
@@ -163,7 +188,7 @@
 				93AA82691E769CB9001F5431 /* FDSocketMonitor.m */,
 				93735E481E70FBC600981258 /* FDChatFileUploader.h */,
 				93735E491E70FBC600981258 /* FDChatFileUploader.m */,
-				93B70D851E7A36040013ED85 /* FDChatMessage */,
+				10201B401E7A5BC800857597 /* FDChatMessage */,
 			);
 			path = FDChat;
 			sourceTree = "<group>";
@@ -295,7 +320,6 @@
 				93E42A561DCC778E0005ED14 /* LaunchScreen.storyboard in Resources */,
 				10986F4F1E6D5C4300789DCE /* FDChatMessageCell.xib in Resources */,
 				93E42A531DCC778E0005ED14 /* Assets.xcassets in Resources */,
-				93B70D861E7A36040013ED85 /* FDChatMessage in Resources */,
 				101C3C8D1E6FE18200688D8F /* EmotionIcons in Resources */,
 				93E42A511DCC778E0005ED14 /* Main.storyboard in Resources */,
 				10986F521E6D5C4300789DCE /* FDChatMoreView.xib in Resources */,
@@ -366,17 +390,21 @@
 				938B1C611E03987B0079F8CC /* FDWebSocket.m in Sources */,
 				937F1D371E7283110024FC1F /* FDEmotionPageView.m in Sources */,
 				10986F4E1E6D5C4300789DCE /* FDChatMessageCell.m in Sources */,
+				10201B4B1E7A5BC800857597 /* FDChatMessageManager.m in Sources */,
 				10986F511E6D5C4300789DCE /* FDChatMoreView.m in Sources */,
 				937F1D361E7283110024FC1F /* FDEmotionListView.m in Sources */,
 				937F1D341E7283110024FC1F /* FDEmotion.m in Sources */,
 				937F1D331E7283110024FC1F /* UIView+FDExtension.m in Sources */,
+				10201B491E7A5BC800857597 /* FDChatMessage.m in Sources */,
 				10986F581E6D5C4300789DCE /* FDInputTextView.m in Sources */,
 				10690CB21E714296005CFD56 /* FDChatMessageDataHandleCenter.m in Sources */,
 				101C39021E6FDFEF00688D8F /* FDChatViewController.m in Sources */,
 				93735E4A1E70FBC600981258 /* FDChatFileUploader.m in Sources */,
 				93E42A4B1DCC778E0005ED14 /* AppDelegate.m in Sources */,
+				10201B4C1E7A5BC800857597 /* FDChatMessageParser.m in Sources */,
 				93E42A481DCC778E0005ED14 /* main.m in Sources */,
 				937F1D321E7283110024FC1F /* NSString+Helper.m in Sources */,
+				10201B4A1E7A5BC800857597 /* FDChatMessageBuilder.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

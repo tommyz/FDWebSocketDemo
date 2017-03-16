@@ -46,8 +46,9 @@
 
 /*
  *  初始化聊天socket
+ *  complete
  */
-- (void)openSocket;
+- (void)openSocket:(void(^)())complete;
 
 /*
  *  关闭聊天socket
