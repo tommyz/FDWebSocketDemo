@@ -15,7 +15,7 @@
 #import "FDSocketMonitor.h"
 
 static FMDatabase *_db;
-#define FDImagePath(imageName) [[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject] stringByAppendingPathComponent:[NSString stringWithFormat:@"%@", imageName]]
+#define FDImagePath(imageName) [NSString stringWithFormat:@"%@/chatMessages_images/%@.jpg",[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject],imageName]
 
 @interface FDChatMessageDataHandleCenter ()
 // 连接监视器
@@ -84,6 +84,12 @@ static FMDatabase *_db;
 }
 
 + (void)saveImageToSandBox:(UIImage *)image imageName:(NSString *)imageName{//用uuid存
+    //创建文件夹
+    NSString *folderPath = [NSString stringWithFormat:@"%@/chatMessages_images/",[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject]];
+    if (![[NSFileManager defaultManager]isExecutableFileAtPath:folderPath]) {
+       [[NSFileManager defaultManager]createDirectoryAtPath:folderPath withIntermediateDirectories:YES attributes:nil error:nil];
+    }
+
     NSData *imageData = UIImageJPEGRepresentation(image,imageCompressionQuality);
     [imageData writeToFile:FDImagePath(imageName) atomically:YES];
 }
