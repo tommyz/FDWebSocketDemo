@@ -91,7 +91,7 @@
     
     // 1.分页指示器
     self.pageControl.width = self.width;
-    self.pageControl.height = 25;
+    self.pageControl.height = 40;
     self.pageControl.x = 0;
     self.pageControl.y = self.height - self.pageControl.height;
     

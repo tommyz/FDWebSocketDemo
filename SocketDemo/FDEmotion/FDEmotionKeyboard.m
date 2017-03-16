@@ -42,13 +42,13 @@
     if (self = [super initWithFrame:frame]) {
         
         //1.默认表情按钮
-        UIButton *defaultButton = [[UIButton alloc]init];
-        [defaultButton setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
-        defaultButton.titleLabel.font = [UIFont systemFontOfSize:16];
-        [defaultButton setTitle:@"默认表情" forState:UIControlStateNormal];
-        [defaultButton setBackgroundColor:[UIColor colorWithRed:221.0/255.0 green:221.0/255.0 blue:221.0/255.0 alpha:1.0]];
-        [self addSubview:defaultButton];
-        self.defaultButton = defaultButton;
+//        UIButton *defaultButton = [[UIButton alloc]init];
+//        [defaultButton setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
+//        defaultButton.titleLabel.font = [UIFont systemFontOfSize:16];
+//        [defaultButton setTitle:@"默认表情" forState:UIControlStateNormal];
+//        [defaultButton setBackgroundColor:[UIColor colorWithRed:221.0/255.0 green:221.0/255.0 blue:221.0/255.0 alpha:1.0]];
+//        [self addSubview:defaultButton];
+//        self.defaultButton = defaultButton;
     }
     return self;
 }
@@ -57,15 +57,15 @@
 - (void)layoutSubviews{
     [super layoutSubviews];
     
-    // 1.默认表情按钮
-    self.defaultButton.width = self.width;
-    self.defaultButton.height = 37;
-    self.defaultButton.x = 0;
-    self.defaultButton.y = self.height - self.defaultButton.height;
+//    // 1.默认表情按钮
+//    self.defaultButton.width = self.width;
+//    self.defaultButton.height = 37;
+//    self.defaultButton.x = 0;
+//    self.defaultButton.y = self.height - self.defaultButton.height;
     
     // 2.默认表情内容
     self.defaultListView.x = self.defaultListView.y = 0;
     self.defaultListView.width = self.width;
-    self.defaultListView.height = self.defaultButton.y;
+    self.defaultListView.height = self.height;
 }
 @end
