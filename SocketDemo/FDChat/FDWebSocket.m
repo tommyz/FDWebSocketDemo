@@ -188,6 +188,8 @@ typedef NS_ENUM(NSUInteger, FDChatDisconnectCode) {
         NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:SocketUrl]];
         [request setValue:FDChatSource forHTTPHeaderField:@"chatSource"];
         [request setValue:@"9b54db5ee1ac9e9cc2e321c7a6a54511" forHTTPHeaderField:@"connectId"];
+        [request setValue:@"593559.IOS" forHTTPHeaderField:@"uid"];
+
         self.webSocket = [[SRWebSocket alloc] initWithURLRequest:request];
         self.webSocket.delegate = self;
         [self.webSocket open];

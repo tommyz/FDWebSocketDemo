@@ -104,10 +104,12 @@ static FMDatabase *_db;
     __weak typeof(self) weakself = self;
     self.isFinishChat = NO;
     [FDWebSocket openSocketSuccess:^{
-        [weakself getOfflineMessages];
-        if (complete) {
-            complete();
-        }
+        [weakself getOfflineMessages:^{
+            if (complete) {
+                complete();
+            }
+        }];
+        
     } failure:^{
         FDChatMessage *message = [FDChatMessageBuilder buildSystemMessage:[NSString stringWithFormat:@"%@%@",FDChatSystemAlertTitle,FDChatSystemConnectFailureAlertString]];
         [weakself reloadUIAndUpdateMessageData:message];
@@ -228,7 +230,7 @@ static FMDatabase *_db;
     }
 }
 
-- (void)getOfflineMessages {
+- (void)getOfflineMessages:(void(^)())complete {
     // 尝试获取历史记录
     [FDWebSocket sendMessage:[FDChatMessageBuilder buildConnectSocketMessage] Success:^(FDChatMessage *message){
         // 操作历史记录
@@ -241,11 +243,17 @@ static FMDatabase *_db;
                     [FDChatMessageDataHandleCenter addMessage:msg];
                 }
             }
+            
             NSLog(@"offline；%@",message.offline);
+        }
+        if (complete) {
+            complete();
         }
         
     } failure:^{
-        
+        if (complete) {
+            complete();
+        }
     }];
 }
 
