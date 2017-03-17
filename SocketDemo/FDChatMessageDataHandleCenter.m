@@ -138,6 +138,7 @@ static FMDatabase *_db;
 }
 
 - (void)closeSocket{
+    self.isFinishChat = YES;
     [FDWebSocket finishChat];
 }
 
